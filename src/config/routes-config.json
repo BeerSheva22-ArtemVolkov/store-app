@@ -1,0 +1,81 @@
+{
+    "always": [
+        {
+            "to": "/",
+            "label": "Home",
+            "type": "general", 
+            "order": 1
+        },
+        {
+            "to": "/account",
+            "label": "My Account",
+            "type": "general",
+            "icon": "AccountCircle",
+            "order": 100
+        },
+        {
+            "to": "/store",
+            "label": "Store",
+            "type": "general", 
+            "order": 2
+        },
+        {
+            "to": "/cart",
+            "label": "Shopping Cart",
+            "type": "general",
+            "icon": "ShoppingCart", 
+            "order": 99
+        }
+    ],
+    "authenticated": [
+        {
+            "to": "/account/signout",
+            "label": "Sign Out",
+            "type": "account", 
+            "order": 3
+        }
+    ],
+    "admin": [
+        {
+            "to": "/addproduct",
+            "label": "Add Product",
+            "type": "general", 
+            "order": 4
+        },
+        {
+            "to": "/adminorders",
+            "label": "Admin Orders",
+            "type": "general", 
+            "order": 5
+        }
+    ],
+    "development": [],
+    "noadmin": [
+        {
+            "to": "/account/orders",
+            "label": "My orders",
+            "type": "account", 
+            "order": 6
+        },
+        {
+            "to": "/account/settings",
+            "label": "Account settings",
+            "type": "account", 
+            "order": 7
+        }
+    ],
+    "noauthenticated": [
+        {
+            "to": "/account/registration",
+            "label": "Registration",
+            "type": "account", 
+            "order": 8
+        },
+        {
+            "to": "/account/signin",
+            "label": "Sign In",
+            "type": "account", 
+            "order": 9
+        }
+    ]
+}
