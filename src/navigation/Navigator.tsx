@@ -5,6 +5,7 @@ import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { ShoppingCart, AccountCircle } from '@mui/icons-material'
 import Badge from '@mui/material/Badge';
 import { useSelector } from "react-redux";
+import { useSelectorCart } from "../redux/store";
 
 
 
@@ -14,12 +15,12 @@ const Navigator: React.FC<{ routes: RouteType[] }> = ({ routes }) => {
     const navigate = useNavigate();
     const location = useLocation();
     const [value, setValue] = useState(0);
-    const cartSize = useSelector<any, number>(state => state.cartState.cartSize)
-
+    const cart = useSelectorCart()
+    
     const array = [
         {
             name: 'ShoppingCart',
-            icon: <Badge badgeContent={cartSize} color="error" anchorOrigin={{
+            icon: <Badge badgeContent={cart.length} color="error" anchorOrigin={{
                 vertical: 'bottom',
                 horizontal: 'left',
             }}>

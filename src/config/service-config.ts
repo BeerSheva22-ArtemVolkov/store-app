@@ -1,7 +1,7 @@
-import AuthService from "../service/auth/AuthService";
-import AuthServiceFire from "../service/auth/AuthServiceFire";
-// import EmployeesService from "../service/crud/EmployeesService";
-// import EmployeesServiceFire from "../service/crud/EmployeesServiceFire";
+import AuthService from "../service/authService/AuthService";
+import AuthServiceFire from "../service/authService/AuthServiceFire";
+import ProductsService from "../service/productService/ProductsService"
+import ProductsServiceFire from "../service/productService/ProductsServiceFire"
 
 export const authService: AuthService = new AuthServiceFire();
-// export const employeesService: EmployeesService = new EmployeesServiceFire();
+export const productsService: ProductsService = new ProductsServiceFire();
