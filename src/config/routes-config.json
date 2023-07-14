@@ -3,7 +3,7 @@
         {
             "to": "/",
             "label": "Home",
-            "type": "general", 
+            "type": "general",
             "order": 1
         },
         {
@@ -16,14 +16,20 @@
         {
             "to": "/store",
             "label": "Store",
-            "type": "general", 
+            "type": "general",
             "order": 2
+        },
+        {
+            "to": "/adminorders",
+            "label": "Admin Orders",
+            "type": "general",
+            "order": 5
         },
         {
             "to": "/cart",
             "label": "Shopping Cart",
             "type": "general",
-            "icon": "ShoppingCart", 
+            "icon": "ShoppingCart",
             "order": 99
         }
     ],
@@ -31,7 +37,7 @@
         {
             "to": "/account/signout",
             "label": "Sign Out",
-            "type": "account", 
+            "type": "account",
             "order": 3
         }
     ],
@@ -39,14 +45,8 @@
         {
             "to": "/addproduct",
             "label": "Add Product",
-            "type": "general", 
+            "type": "general",
             "order": 4
-        },
-        {
-            "to": "/adminorders",
-            "label": "Admin Orders",
-            "type": "general", 
-            "order": 5
         }
     ],
     "development": [],
@@ -54,13 +54,13 @@
         {
             "to": "/account/orders",
             "label": "My orders",
-            "type": "account", 
+            "type": "account",
             "order": 6
         },
         {
             "to": "/account/settings",
             "label": "Account settings",
-            "type": "account", 
+            "type": "account",
             "order": 7
         }
     ],
@@ -68,13 +68,13 @@
         {
             "to": "/account/registration",
             "label": "Registration",
-            "type": "account", 
+            "type": "account",
             "order": 8
         },
         {
             "to": "/account/signin",
             "label": "Sign In",
-            "type": "account", 
+            "type": "account",
             "order": 9
         }
     ]

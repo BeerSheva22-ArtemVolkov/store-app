@@ -28,8 +28,8 @@ const ProductItem: React.FC<ProductItemProps> = ({ productItem }) => {
     const dispatch = useDispatch()
 
     console.log(cart);
-    
-    const itemCountStart: number = cart.find(item => item.id === productItem.id)?.id | 0
+
+    const itemCountStart: number = cart.find(item => item.id === productItem.id)?.quantity || 0
     const [itemCount, setItemCount] = useState<number>(itemCountStart)
 
     const addItemToCart = () => {

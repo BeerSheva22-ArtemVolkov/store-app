@@ -20,3 +20,4 @@ export function useSelectorAuth() {
 export function useSelectorCart() {
     return useSelector<any, ProductType[]>(state => state.cartState.cartItems)
 }
+

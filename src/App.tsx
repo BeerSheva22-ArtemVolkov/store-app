@@ -70,6 +70,7 @@ const App: React.FC = () => {
                 </Route>
                 {/* <Route path='/admin' element={<AdminAccount />} > */}
                 <Route path='orders' element={<SellerOrders />} />
+                <Route path='adminorders' element={<SellerOrders />} />
                 <Route path='addproduct' element={<AddProduct />} />
                 {/* </Route> */}
                 <Route path='store' element={<Store />} />

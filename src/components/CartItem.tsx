@@ -29,9 +29,11 @@ const CartItem: React.FC<CartItemProps> = ({ cartItem }) => {
     const dispatch = useDispatch()
     const products: ProductType[] = useSelectorProducts();
 
-    console.log(cart);
+    // console.log(cart, cartItem);
 
-    const itemCountStart: number = cartItem.quantity
+    const itemCountStart: number = cart.find(item => item.id === cartItem.id)!.quantity
+    console.log(itemCountStart);
+
     const [itemCount, setItemCount] = useState<number>(itemCountStart)
 
     const incrementItemCart = () => {
@@ -44,13 +46,13 @@ const CartItem: React.FC<CartItemProps> = ({ cartItem }) => {
         setItemCount(itemCount - 1)
     }
 
-    const nullItemCart = () => {
-        setItemCount(0)
-        setItemCartCount(0)
+    const deleteItemCart = () => {
+        console.log('deleting cart item');
+        dispatch(cartActions.removeFromCart(cartItem.id))
     }
 
     const setItemCartCount = (count: number) => {
-        dispatch(cartActions.setQuantity({ cartItem, count }))
+        dispatch(cartActions.setQuantity({ productItem: cartItem, count }))
     }
 
     function onChangeFn(event: any) {
@@ -59,12 +61,14 @@ const CartItem: React.FC<CartItemProps> = ({ cartItem }) => {
         setItemCartCount(count)
     }
 
+
+
     return <Card sx={{ maxWidth: '100%', boxShadow: 'lg' }}>
         <CardMedia component='img' image={cartItem.image} sx={{ width: 151 }} />
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
             <CardContent>
                 <Typography variant='body1'>{cartItem.name}</Typography>
-                <Typography variant='subtitle1'>{cartItem.price}₪</Typography>
+                <Typography variant='subtitle1'>x{itemCount} {cartItem.price * itemCount}₪</Typography>
                 <Typography variant="body2">{cartItem.description}</Typography>
                 {/* <Link
                 href="#product-card"
@@ -78,8 +82,8 @@ const CartItem: React.FC<CartItemProps> = ({ cartItem }) => {
             </Link>  */}
                 <Box>
                     <Box>
-                        <Button variant="contained" onClick={incrementItemCart} >
-                            +
+                        <Button variant="contained" onClick={decrementItemCart} >
+                            -
                         </Button>
                         <TextField
                             type='number'
@@ -90,10 +94,11 @@ const CartItem: React.FC<CartItemProps> = ({ cartItem }) => {
                                 min: 1,
                                 max: products.find(product => product.id == cartItem.id)?.quantity || 100
                             }} />
-                        <Button variant="contained" onClick={decrementItemCart} >
-                            -
+                        <Button variant="contained" onClick={incrementItemCart} >
+                            +
                         </Button>
-                        <Button variant="contained" onClick={nullItemCart} endIcon={<DeleteIcon />} />
+
+                        <Button variant="contained" onClick={deleteItemCart} endIcon={<DeleteIcon />} />
                     </Box>
 
                 </Box>
