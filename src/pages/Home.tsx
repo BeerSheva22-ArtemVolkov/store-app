@@ -20,7 +20,7 @@ const Home: React.FC = () => {
                 <button onClick={() => dispatch(cartActions.addToCart({id: 1, quantity: 1, name: 'Book'}))}>add</button>
                 <button onClick={() => dispatch(cartActions.removeFromCart({id: 1, quantity: 1, name: 'Book'}))}>remove</button>
                 <button onClick={() => dispatch(cartActions.clearCart())}>clear</button>
-                <button onClick={() => usersService.getUser('68T3sYQPk8M8ncRk48XE6lZZIxS2')}>test</button>
+                {/* <button onClick={() => usersService.getUser('68T3sYQPk8M8ncRk48XE6lZZIxS2')}>test</button> */}
             </div>
         </div>
     );

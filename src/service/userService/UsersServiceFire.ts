@@ -40,16 +40,16 @@ export default class UsersServiceFire implements UsersService {
         })) as Observable<string | UserType[]>
     }
 
-    async getUser(uid: string): Promise<UserType | string> {
-        let res: UserType | string = 'User not found'
-        const docRef: DocumentReference = this.getDocRef(uid)
-        const doc = await getDoc(docRef)
-        const user = doc.data()
-        if (user) {
-            res = user as UserType
-        }
-        return res
-    }
+    // async getUser(uid: string): Promise<UserType | string> {
+    //     let res: UserType | string = 'User not found'
+    //     const docRef: DocumentReference = this.getDocRef(uid)
+    //     const doc = await getDoc(docRef)
+    //     const user = doc.data()
+    //     if (user) {
+    //         res = user as UserType
+    //     }
+    //     return res
+    // }
 
     async updateUser(user: UserType, uid: string): Promise<UserType> {
         const docRef: DocumentReference = this.getDocRef(uid)
