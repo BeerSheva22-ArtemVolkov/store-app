@@ -12,14 +12,17 @@ export function useDispatchCode() {
     return (error: string, successMessage: string) => {
         let code: CodeType = CodeType.OK;
         let message: string = '';
-
-        if (error.includes('Authentication')) {
-            code = CodeType.AUTH_ERROR;
-            message = "Authentication error, mooving to Sign In";
-        } else {
-            code = error.includes('unavailable') ? CodeType.SERVER_ERROR : CodeType.UNKNOWN;
-            message = error;
+        
+        if (error) {
+            if (error.includes('Authentication')) {
+                code = CodeType.AUTH_ERROR;
+                message = "Authentication error, mooving to Sign In";
+            } else {
+                code = error.includes('unavailable') ? CodeType.SERVER_ERROR : CodeType.UNKNOWN;
+                message = error;
+            }
         }
+        
         dispatch(codeActions.set({ code, message: message || successMessage }))
     }
 }

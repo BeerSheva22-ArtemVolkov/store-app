@@ -23,10 +23,10 @@ function getErrorMessage(firestoreError: FirestoreError): string {
     return errorMessage
 }
 
-function convertEmployee(employee: OrderType, id?: string): OrderType {
+function convertOrder(order: OrderType, id?: string): OrderType {
     const res: any = {
-        ...employee,
-        id: id ? id : employee.id,
+        ...order,
+        id: id ? id : order.id,
         dateStart: getISODateStr(new Date())
     }
     return res;
@@ -38,7 +38,7 @@ export default class OrdersServiceFire implements OrdersService {
 
     async addOrder(order: OrderType): Promise<OrderType> {
         const id: string = await this.getId()
-        const convertedOrder: OrderType = convertEmployee(order, id)
+        const convertedOrder: OrderType = convertOrder(order, id)
         const docRef: DocumentReference = this.getDocRef(id)
         try {
             await setDoc(docRef, convertedOrder)

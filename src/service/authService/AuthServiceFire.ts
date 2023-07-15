@@ -9,7 +9,7 @@ import { Google } from "@mui/icons-material";
 export default class AuthServiceFire implements AuthService {
 
     private auth = getAuth(appFirebase)
-    private administratorsCollection = collection(getFirestore(appFirebase), 'administrators');
+    private administratorsCollection = collection(getFirestore(appFirebase), 'admins');
 
     async login(loginData: UserCredentialsDataType): Promise<UserDataType> {
         let userData: UserDataType = null
@@ -25,7 +25,7 @@ export default class AuthServiceFire implements AuthService {
             }
             console.log(userAuth);
 
-            userData = { email: userAuth.user.email as string, role: await this.isAdmin(userAuth.user.uid) ? "admin" : "user" }
+            userData = { email: userAuth.user.email as string, role: await this.isAdmin(userAuth.user.uid) ? "admin" : "user", uid: userAuth.user.uid }
             console.log(userData);
         } catch (error: any) {
             console.log(error);
@@ -55,14 +55,13 @@ export default class AuthServiceFire implements AuthService {
             userAuth = await createUserWithEmailAndPassword(this.auth, loginData.email, loginData.password)
             console.log(userAuth);
 
-            userData = { email: userAuth.user.email as string, role: "user" }
+            userData = { email: userAuth.user.email as string, role: "user", uid: userAuth.user.uid }
 
             res = userData
             console.log(userData);
 
         } catch (error: any) {
             console.log(error);
-
             if (error.code === 'auth/email-already-in-use') {
                 res = "User with this email already registered";
             } else if (error.code === 'auth/invalid-email') {

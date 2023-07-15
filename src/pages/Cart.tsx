@@ -1,11 +1,11 @@
-import { Box, Button, Grid, Paper, Typography, styled } from "@mui/material"
+import { Alert, Box, Button, Divider, Grid, Paper, Typography, styled } from "@mui/material"
 import ProductItem from "../components/ProductItem";
 import { useSelectorAuth, useSelectorCart } from "../redux/store";
 import CartItem from "../components/CartItem";
 import { useDispatch } from "react-redux";
 import { ordersService } from "../config/service-config";
-
-
+import { useNavigate } from "react-router-dom";
+import routesConfig from '../config/routes-config.json'
 
 const Cart: React.FC = () => {
 
@@ -21,7 +21,18 @@ const Cart: React.FC = () => {
     console.log(cart);
     // const dispatch = useDispatch()
     const userData = useSelectorAuth();
-    
+    const navigate = useNavigate()
+
+    async function makeOrder() {
+        await ordersService.addOrder({
+            status: "New",
+            dateStart: new Date(),
+            userEmail: userData!.email,
+            total: cart.reduce((sum, cartItem) => cartItem.price * cartItem.quantity + sum, 0),
+            cart
+        })
+    }
+
     return (
         <Box sx={{ flexGrow: 1 }}>
             <Grid
@@ -37,22 +48,33 @@ const Cart: React.FC = () => {
                     })}
                 </Grid>
                 <Grid item xs={4}>
-                    <Button
+                    {userData ? <Button
                         fullWidth
                         color="primary"
-                        disabled={false}
+                        disabled={cart.length == 0}
                         size="large"
                         variant="outlined"
-                        onClick={() => {
-                            ordersService.addOrder({
-                                status: "New",
-                                dateStart: new Date(),
-                                userEmail: userData!.email,
-                                total: cart.reduce((sum, cartItem) => cartItem.price * cartItem.quantity + sum, 0),
-                                cart
-                            })
-                        }}
+                        onClick={makeOrder}
                     >Оформить заказ</Button>
+                        :
+                        <Box>
+                            <Alert severity="error" icon={false}>Вы не авторизованы</Alert>
+                            <Button
+                                fullWidth
+                                color="primary"
+                                size="large"
+                                variant="outlined"
+                                onClick={() => navigate(routesConfig.noauthenticated.find(route => route.label == 'Registration')!.to)}
+                            >Зарегистрируйтесь</Button>
+                            <Divider sx={{ width: '100%', fontWeight: 'bold' }}>Или</Divider>
+                            <Button
+                                fullWidth
+                                color="primary"
+                                size="large"
+                                variant="outlined"
+                                onClick={() => navigate(routesConfig.noauthenticated.find(route => route.label == 'Sign In')!.to)}
+                            >Войдите в аккаунт</Button>
+                        </Box>}
                     <Box>
                         <Typography component="h1" variant="h5">
                             Итого:

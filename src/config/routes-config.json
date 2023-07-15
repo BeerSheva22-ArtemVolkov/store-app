@@ -12,25 +12,6 @@
             "type": "general",
             "icon": "AccountCircle",
             "order": 100
-        },
-        {
-            "to": "/store",
-            "label": "Store",
-            "type": "general",
-            "order": 2
-        },
-        {
-            "to": "/adminorders",
-            "label": "Admin Orders",
-            "type": "general",
-            "order": 5
-        },
-        {
-            "to": "/cart",
-            "label": "Shopping Cart",
-            "type": "general",
-            "icon": "ShoppingCart",
-            "order": 99
         }
     ],
     "authenticated": [
@@ -38,7 +19,7 @@
             "to": "/account/signout",
             "label": "Sign Out",
             "type": "account",
-            "order": 3
+            "order": 98
         }
     ],
     "admin": [
@@ -47,6 +28,12 @@
             "label": "Add Product",
             "type": "general",
             "order": 4
+        },
+        {
+            "to": "/adminorders",
+            "label": "Admin Orders",
+            "type": "general",
+            "order": 5
         }
     ],
     "development": [],
@@ -62,6 +49,19 @@
             "label": "Account settings",
             "type": "account",
             "order": 7
+        },
+        {
+            "to": "/cart",
+            "label": "Shopping Cart",
+            "type": "general",
+            "icon": "ShoppingCart",
+            "order": 99
+        },
+        {
+            "to": "/store",
+            "label": "Store",
+            "type": "general",
+            "order": 2
         }
     ],
     "noauthenticated": [
@@ -76,6 +76,19 @@
             "label": "Sign In",
             "type": "account",
             "order": 9
+        },
+        {
+            "to": "/store",
+            "label": "Store",
+            "type": "general",
+            "order": 2
+        },
+        {
+            "to": "/cart",
+            "label": "Shopping Cart",
+            "type": "general",
+            "icon": "ShoppingCart",
+            "order": 99
         }
     ]
 }

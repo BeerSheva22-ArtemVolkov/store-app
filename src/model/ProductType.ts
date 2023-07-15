@@ -1,5 +1,5 @@
 type ProductType = {
-    id: any
+    id?: any
     name: string
     price: number
     quantity: number

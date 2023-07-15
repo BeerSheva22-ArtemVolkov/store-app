@@ -1,6 +1,7 @@
 type UserDataType = {
-    email: string;
-    role: string;
+    email: string
+    role: 'admin' | 'user'
+    uid: string
 } | null
 
 export default UserDataType

@@ -1,11 +1,8 @@
 import { Typography } from "@mui/material"
+import OrdersTable from "../components/OrdersTable"
 
 const CastomerOrders: React.FC = () => {
-    return (
-        <Typography component={"div"}>
-            CastomerOrders menu
-        </Typography>
-    )
+    return <OrdersTable />
 }
 
 export default CastomerOrders
