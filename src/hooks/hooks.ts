@@ -13,6 +13,7 @@ export function useDispatchCode() {
     return (error: string, successMessage: string) => {
         let code: CodeType = CodeType.OK;
         let message: string = '';
+        console.log(error, successMessage);
         
         if (error) {
             if (error.includes('Authentication')) {
@@ -91,6 +92,6 @@ export function useSelectorUsers() {
             });
         return () => subscription.unsubscribe();
     }, []);
-    
+
     return users;
 }

@@ -1,7 +1,7 @@
 import { Observable, catchError, of } from "rxjs";
 import ProductType from "../../model/ProductType";
 import ProductsService from "./ProductsService";
-import { CollectionReference, DocumentReference, FirestoreError, collection, doc, getDoc, getFirestore, setDoc } from "firebase/firestore";
+import { CollectionReference, DocumentReference, FirestoreError, collection, deleteDoc, doc, getDoc, getFirestore, setDoc } from "firebase/firestore";
 import { collectionData } from 'rxfire/firestore'
 import appFirebase from "../../config/firebase-config";
 import { getRandomInt } from "../../util/random";
@@ -28,7 +28,7 @@ export default class ProductsServiceFire implements ProductsService {
         const id: string = await this.getId()
         const docRef: DocumentReference = this.getDocRef(id)
         try {
-            await setDoc(docRef, product)
+            await setDoc(docRef, { ...product, id })
         } catch (error: any) {
             const firestoreError: FirestoreError = error;
             const errorMessage = getErrorMessage(firestoreError)
@@ -45,14 +45,40 @@ export default class ProductsServiceFire implements ProductsService {
         })) as Observable<string | ProductType[]>
     }
 
-    updateProduct(product: ProductType): Promise<ProductType> {
-        throw new Error("Method not implemented.");
+    async updateProduct(product: ProductType): Promise<ProductType> {
+        const id: string = product.id
+        console.log(id);
+
+        const docRef: DocumentReference = this.getDocRef(id)
+        try {
+            await setDoc(docRef, { ...product, id })
+        } catch (error: any) {
+            const firestoreError: FirestoreError = error;
+            const errorMessage = getErrorMessage(firestoreError)
+            throw errorMessage
+        }
+        return product
+    }
+
+    async deleteProduct(productID: any): Promise<void> {
+        const docRef: DocumentReference = this.getDocRef(productID);
+
+        if (!productID && !await this.exists(productID)) {
+            throw 'not found'
+        }
+        try {
+            await deleteDoc(docRef)
+        } catch (error: any) {
+            const firestoreError: FirestoreError = error;
+            const errorMessage = getErrorMessage(firestoreError)
+            throw errorMessage
+        }
     }
 
     private getDocRef(id: string): DocumentReference {
         return doc(this.collectionRef, id) // возвращает ссылку на информациооный объект
     }
-    
+
     private async exists(id: string): Promise<boolean> {
         const docRef: DocumentReference = this.getDocRef(id)
         const docSnap = await getDoc(docRef) // объект из массива
@@ -66,5 +92,5 @@ export default class ProductsServiceFire implements ProductsService {
         } while (await this.exists(id))
         return id
     }
-    
+
 }

@@ -24,8 +24,8 @@
     ],
     "admin": [
         {
-            "to": "/addproduct",
-            "label": "Add Product",
+            "to": "/products",
+            "label": "Products",
             "type": "general",
             "order": 4
         },

@@ -1,8 +1,8 @@
 import { useTheme } from "@emotion/react"
 import { Box, Button, Container, CssBaseline, Divider, Grid, TextField, ThemeProvider, Typography } from "@mui/material"
-import { FormEvent, useRef, useState } from "react"
-import { productsService } from "../config/service-config";
+import { FormEvent, useEffect, useRef, useState } from "react"
 import { useDispatchCode } from "../hooks/hooks";
+import ProductType from "../model/ProductType";
 
 const formValuesInit = {
     name: '',
@@ -12,30 +12,27 @@ const formValuesInit = {
     description: '',
 }
 
-const AddProduct: React.FC = () => {
+type productProps = {
+    product?: ProductType
+    submitFn(product: ProductType): Promise<ProductType>
+}
+
+const AddProduct: React.FC<productProps> = ({ product, submitFn }) => {
 
     const theme = useTheme()
-    // const formRef = useRef<any>('')
+    console.log(product);
 
-
-
-    // const onSubmit = async (event: any) => {
-    //     event.preventDefault();
-
-    //     const data = new FormData(formRef.current);
-    //     const name: string = data.get('name')! as string;
-    //     const price: number = new Date(data.get('birthDate')! as string);
-    //     const quantity: number = data.get('')! as number;
-    //     const image: string = data.get('image')! as string;
-    //     const description: string = data.get('description')! as string;
-
-    //     const result = await productsService.addProduct({})
-
-    //     inputRef.current.reset();
-    // };
     const [formValues, setFormValues] = useState(formValuesInit)
     const dispatch = useDispatchCode();
-    
+
+    useEffect(() => {
+        setFormValues(product || formValuesInit)
+        return () => {
+            console.log('unmounting');
+            setFormValues(formValuesInit)
+        }
+    }, [product])
+
     const handlerName = (event: any) => {
         setFormValues({ ...formValues, name: event.target.value })
     }
@@ -57,18 +54,19 @@ const AddProduct: React.FC = () => {
     }
 
     async function onReset(event: FormEvent) {
-        setFormValues(formValuesInit)
+        setFormValues(product || formValuesInit)
     }
 
     async function onSubmit(event: any) {
-        event.preventDefault();        
+        event.preventDefault();
         let errorMessage = '';
         const successMessage = 'Product added'
         try {
-            await productsService.addProduct({name: formValues.name, price: formValues.price, quantity: formValues.quantity, image: formValues.image, description: formValues.description, rating: {count: 0, rate: 0}})
-            onReset(event)
+            await submitFn({id: product?.id, name: formValues.name, price: formValues.price, quantity: formValues.quantity, image: formValues.image, description: formValues.description, rating: { count: 0, rate: 0 } })
+            // await productsService.addProduct({ name: formValues.name, price: formValues.price, quantity: formValues.quantity, image: formValues.image, description: formValues.description, rating: { count: 0, rate: 0 } })
+            // onReset(event)
         }
-        catch (error: any){
+        catch (error: any) {
             errorMessage = error
         }
         dispatch(errorMessage, successMessage)
@@ -86,9 +84,6 @@ const AddProduct: React.FC = () => {
                         alignItems: 'center',
                     }}
                 >
-                    <Typography component="h1" variant="h5">
-                        New product
-                    </Typography>
                     <Box component="form" onReset={onReset} onSubmit={onSubmit} sx={{ mt: 1 }}>
                         <Grid container justifyContent={'center'} spacing={1}>
                             <Grid item xs={12} sm={6} md={12}>
@@ -163,7 +158,7 @@ const AddProduct: React.FC = () => {
                                     fullWidth
                                     variant="contained"
                                 >
-                                    Add new product
+                                    {product ? "Update product" : "Add new product"}
                                 </Button>
                             </Grid>
                             <Grid item xs={12} sm={6} md={6}>

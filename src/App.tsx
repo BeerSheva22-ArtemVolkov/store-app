@@ -14,7 +14,7 @@ import routesConfig from './config/routes-config.json'
 import SignOut from './pages/SignOut';
 import AdminAccount from './pages/AdminAccount';
 import Store from './pages/Store';
-import AddProduct from './pages/AddProduct';
+import AddProduct from './components/ProductForm';
 import CustomerSettings from './pages/CustomerSettings';
 import { useSelectorAuth, useSelectorCode } from './redux/store';
 import UserDataType from './model/UserDataType';
@@ -25,6 +25,7 @@ import CodeType from './model/CodeType';
 import { authActions } from './redux/slices/authSlice';
 import { authService } from './config/service-config';
 import { codeActions } from './redux/slices/codeSlice';
+import Products from './pages/Products';
 
 const { always, authenticated, admin, noadmin, noauthenticated, development } = routesConfig;
 
@@ -67,7 +68,7 @@ const App: React.FC = () => {
     const [alertMessage, severity] = useMemo(() => codeProcessing(), [code]);
     const userData = useSelectorAuth();
     const routes: RouteType[] = useMemo(() => getRoutes(userData), [userData])
-    
+
     function codeProcessing(): [string, StatusType] {
         const res: [string, StatusType] = [code.message, 'success'];
 
@@ -97,7 +98,8 @@ const App: React.FC = () => {
                 {/* <Route path='/admin' element={<AdminAccount />} > */}
                 <Route path='orders' element={<SellerOrders />} />
                 <Route path='adminorders' element={<SellerOrders />} />
-                <Route path='addproduct' element={<AddProduct />} />
+                {/* <Route path='addproduct' element={<AddProduct />} /> */}
+                <Route path='products' element={<Products />} />
                 {/* </Route> */}
                 <Route path='store' element={<Store />} />
                 <Route path='cart' element={<Cart />} />
