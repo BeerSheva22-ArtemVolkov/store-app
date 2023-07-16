@@ -1,4 +1,4 @@
-import { Alert, Box, Button, Divider, Grid, Paper, Typography, styled } from "@mui/material"
+import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Grid, Paper, Typography, styled } from "@mui/material"
 import ProductItem from "../components/ProductItem";
 import { useSelectorAuth, useSelectorCart } from "../redux/store";
 import CartItem from "../components/CartItem";
@@ -6,31 +6,55 @@ import { useDispatch } from "react-redux";
 import { ordersService } from "../config/service-config";
 import { useNavigate } from "react-router-dom";
 import routesConfig from '../config/routes-config.json'
+import { useSelectorUsers } from "../hooks/hooks";
+import UserType from "../model/UserType";
+import { useEffect, useState } from "react";
+import { cartActions } from "../redux/slices/cartSlice";
 
 const Cart: React.FC = () => {
 
-    const Item = styled(Paper)(({ theme }) => ({
-        backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-        ...theme.typography.body2,
-        padding: theme.spacing(1),
-        textAlign: 'center',
-        color: theme.palette.text.secondary,
-    }));
-
+    const dispatch = useDispatch()
     const cart = useSelectorCart()
-    console.log(cart);
-    // const dispatch = useDispatch()
     const userData = useSelectorAuth();
     const navigate = useNavigate()
+    const users = useSelectorUsers()
+    const [currentUser, setCurrentuser] = useState<UserType | undefined>(users.find(user => user.email == userData?.email))
+    const [submitDialog, setSubmitDialog] = useState<boolean>(false)
+
+    const closeSubmitDialog = () =>{
+        setSubmitDialog(false)
+    }
+
+    const openSubmitDialog = () =>{
+        setSubmitDialog(true)
+    }
+
+    useEffect(() => {
+        setCurrentuser(users.find(user => user.email == userData?.email))
+    }, [userData, users])
+
+    function checkAddress(): boolean {
+        let res = false
+        if (currentUser) {
+            res = Boolean(currentUser.address.city) && Boolean(currentUser.address.flatNumber) && Boolean(currentUser.address.street) && Boolean(currentUser.address.streetNumber)
+        }
+        return res
+    }
 
     async function makeOrder() {
-        await ordersService.addOrder({
-            status: "New",
-            dateStart: new Date(),
-            userEmail: userData!.email,
-            total: cart.reduce((sum, cartItem) => cartItem.price * cartItem.quantity + sum, 0),
-            cart
-        })
+        try {
+            await ordersService.addOrder({
+                status: "New",
+                dateStart: new Date(),
+                userEmail: userData!.email,
+                total: cart.reduce((sum, cartItem) => cartItem.price * cartItem.quantity + sum, 0),
+                cart
+            })
+            dispatch(cartActions.clearCart())
+        } catch (error: any) {
+            console.log(error.message);
+        }
+        closeSubmitDialog()
     }
 
     return (
@@ -41,24 +65,29 @@ const Cart: React.FC = () => {
             >
                 <Grid item container spacing={1} xs={8}>
                     {cart.map(cartItem => {
-                        console.log('building cart item', cartItem);
                         return <Grid item xs={12}>
                             <CartItem cartItem={cartItem} />
                         </Grid>
                     })}
                 </Grid>
                 <Grid item xs={4}>
-                    {userData ? <Button
-                        fullWidth
-                        color="primary"
-                        disabled={cart.length == 0}
-                        size="large"
-                        variant="outlined"
-                        onClick={makeOrder}
-                    >Оформить заказ</Button>
+                    {userData ?
+                        <Box>
+                            {!checkAddress() && <Alert severity="error" icon={false}>Вы не заполнили данные о доставке</Alert>}
+                            < Button
+                                fullWidth
+                                color="primary"
+                                disabled={cart.length == 0 || !checkAddress()}
+                                size="large"
+                                variant="outlined"
+                                onClick={openSubmitDialog}
+                            >Оформить заказ</Button>
+                        </Box>
                         :
                         <Box>
                             <Alert severity="error" icon={false}>Вы не авторизованы</Alert>
+
+
                             <Button
                                 fullWidth
                                 color="primary"
@@ -85,7 +114,24 @@ const Cart: React.FC = () => {
                     </Box>
                 </Grid>
             </Grid >
-        </Box>
+            <Dialog open={submitDialog} onClose={closeSubmitDialog} fullWidth maxWidth={"xs"}>
+                <DialogTitle>Submit order</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Submit order?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button autoFocus onClick={closeSubmitDialog}>
+                        Close
+                    </Button>
+                    <Button onClick={makeOrder} autoFocus>
+                        Submit
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        </Box >
+
     )
 }
 

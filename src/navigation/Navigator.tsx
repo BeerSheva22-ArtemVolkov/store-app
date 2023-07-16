@@ -10,7 +10,6 @@ import { useSelectorCart } from "../redux/store";
 
 
 const Navigator: React.FC<{ routes: RouteType[] }> = ({ routes }) => {
-    console.log(routes);
 
     const navigate = useNavigate();
     const location = useLocation();

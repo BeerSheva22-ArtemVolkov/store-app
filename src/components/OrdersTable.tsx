@@ -72,7 +72,6 @@ const OrdersTable: React.FC = () => {
                 return [
                     <GridActionsCellItem label="info" icon={<InfoIcon />} onClick={() => orderInfo(params.id)} />,
                     <GridActionsCellItem disabled={disableButton} label="update" icon={<UpdateIcon />} onClick={() => orderUpdate(params.id)} />,
-                    // <GridActionsCellItem disabled={disableButton} label="status" icon={<CheckIcon />} />,
                     <GridActionsCellItem disabled={disableButton} label="remove" icon={<Delete />} onClick={() => orderDelete(params.id)} />,
                 ];
             }
