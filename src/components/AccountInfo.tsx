@@ -29,6 +29,10 @@ const AccountInfo: React.FC<Props> = ({ submitFn }) => {
     const [open, setOpen] = useState(false);
     const severity = useRef<StatusType>('success');
     const [editMode, setEditMode] = useState<boolean>(false)
+    const [firstName, setFirstName] = useState<string>(currentUser?.firstName || '')
+    const [lastName, setLastName] = useState<string>(currentUser?.lastName || '')
+    const [email, setEmail] = useState<string>(currentUser?.email || '')
+    const [nickname, setNickname] = useState<string>(currentUser?.nickname || '')
     const [city, setCity] = useState<string>(currentUser?.address.city || '')
     const [street, setStreet] = useState<string>(currentUser?.address.street || '')
     const [streetNumber, setStreetNumber] = useState<number>(currentUser?.address.streetNumber || 0)
@@ -44,6 +48,18 @@ const AccountInfo: React.FC<Props> = ({ submitFn }) => {
 
     const changeEditMode = () => {
         setEditMode(!editMode)
+    }
+
+    const firstNameChange = (event: any) => {
+        setFirstName(event.target.value)
+    }
+
+    const lastNameChange = (event: any) => {
+        setLastName(event.target.value)
+    }
+
+    const nicknameChange = (event: any) => {
+        setNickname(event.target.value)
     }
 
     const cityChange = (event: any) => {
@@ -84,7 +100,7 @@ const AccountInfo: React.FC<Props> = ({ submitFn }) => {
         //     let streetNumber: number = +(data.get('streetNumber')! as string);
         //     let flatNumber: number = +(data.get('flatNumber')! as string);
 
-        const result = await submitFn({ ...currentUser!, address: { city, street, flatNumber, streetNumber } }, userData!.uid);
+        const result = await submitFn({ email: currentUser!.email, firstName, lastName, nickname, address: { city, street, flatNumber, streetNumber } }, userData!.uid);
 
         message.current = result.message!;
         severity.current = result.status;
@@ -141,13 +157,17 @@ const AccountInfo: React.FC<Props> = ({ submitFn }) => {
                                     </Grid>
                                     <Grid item xs={7} sm={7} md={7}>
                                         <TextField
+                                            error={editMode}
+                                            //TODO
                                             required
                                             fullWidth
                                             id="fname"
                                             name="fname"
                                             variant="filled"
-                                            value={currentUser?.firstName}
+                                            value={currentUser?.firstName || firstName}
                                             inputProps={props}
+                                            onChange={firstNameChange}
+                                            disabled={Boolean(currentUser?.firstName) || !editMode}
                                         />
                                     </Grid>
                                 </Grid>
@@ -168,8 +188,10 @@ const AccountInfo: React.FC<Props> = ({ submitFn }) => {
                                             id="lname"
                                             name="lname"
                                             variant="filled"
-                                            value={currentUser?.lastName}
+                                            value={currentUser?.lastName || lastName}
                                             inputProps={props}
+                                            onChange={lastNameChange}
+                                            disabled={Boolean(currentUser?.lastName) || !editMode}
                                         />
                                     </Grid>
                                 </Grid>
@@ -193,6 +215,7 @@ const AccountInfo: React.FC<Props> = ({ submitFn }) => {
                                             variant="filled"
                                             value={currentUser?.email}
                                             inputProps={props}
+                                            disabled={Boolean(currentUser?.email) || !editMode}
                                         />
                                     </Grid>
                                 </Grid>
@@ -213,8 +236,10 @@ const AccountInfo: React.FC<Props> = ({ submitFn }) => {
                                             name="nickname"
                                             id="nickname"
                                             variant="filled"
-                                            value={currentUser?.nickname}
+                                            value={currentUser?.nickname || nickname}
                                             inputProps={props}
+                                            onChange={nicknameChange}
+                                            disabled={Boolean(currentUser?.nickname) || !editMode}
                                         />
                                     </Grid>
                                 </Grid>

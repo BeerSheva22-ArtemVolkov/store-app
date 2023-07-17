@@ -15,10 +15,13 @@ import InputResultType from '../model/InputResultType';
 import { Alert, Divider, Snackbar } from '@mui/material';
 import StatusType from '../model/StatusType';
 import GoogleIcon from '@mui/icons-material/Google';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import { GoogleLoginButton, FacebookLoginButton } from 'react-social-login-buttons'
 // import { NetworkType } from '../../service/auth/AuthService';
 
 const SUBMIT_BUTTON_VALUE = 'Sign In'
 const GOOGLE_SUBMIT_BUTTON_VALUE = 'Google Sign In'
+const FACEBOOK_SUBMIT_BUTTON_VALUE = 'Facebook Sign In'
 
 function Copyright(props: any) {
     return (
@@ -56,6 +59,9 @@ const SignInForm: React.FC<Props> = ({ submitFn }) => {
         switch (event.nativeEvent.submitter.value) {
             case GOOGLE_SUBMIT_BUTTON_VALUE:
                 email = "GOOGLE"
+                break;
+            case FACEBOOK_SUBMIT_BUTTON_VALUE:
+                email = "FACEBOOK"
                 break;
             case SUBMIT_BUTTON_VALUE:
                 email = data.get('email')! as string;
@@ -123,7 +129,7 @@ const SignInForm: React.FC<Props> = ({ submitFn }) => {
                                     Sign In
                                 </Button>
                             </Grid>
-                            <Divider sx={{width: '100%', fontWeight: 'bold'}}>or</Divider>
+                            <Divider sx={{ width: '100%', fontWeight: 'bold' }}>or</Divider>
                             <Grid item xs={12} sm={6} md={12}>
                                 <Button
                                     type="submit"
@@ -133,6 +139,17 @@ const SignInForm: React.FC<Props> = ({ submitFn }) => {
                                     startIcon={<GoogleIcon />}
                                 >
                                     Sign In with Google
+                                </Button>
+                            </Grid>
+                            <Grid item xs={12} sm={6} md={12}>
+                                <Button
+                                    type="submit"
+                                    fullWidth
+                                    variant="outlined"
+                                    value={FACEBOOK_SUBMIT_BUTTON_VALUE}
+                                    startIcon={<FacebookIcon />}
+                                >
+                                    Sign In with Facebook
                                 </Button>
                             </Grid>
                         </Grid>

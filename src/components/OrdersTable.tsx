@@ -51,10 +51,12 @@ const style = {
 };
 
 type OrdersTableProps = {
-    
+
 }
 
 const OrdersTable: React.FC = () => {
+
+    const userData = useSelectorAuth();
 
     const columnsAdmin: GridColDef[] = [
         {
@@ -69,17 +71,18 @@ const OrdersTable: React.FC = () => {
             field: 'actions', type: "actions", flex: 0.7, getActions: (params) => {
                 const row: OrderType = params.row
                 const disableButton: boolean = row.status == "Deleted" || row.status == "Done"
-                return [
-                    <GridActionsCellItem label="info" icon={<InfoIcon />} onClick={() => orderInfo(params.id)} />,
-                    <GridActionsCellItem disabled={disableButton} label="update" icon={<UpdateIcon />} onClick={() => orderUpdate(params.id)} />,
-                    <GridActionsCellItem disabled={disableButton} label="remove" icon={<Delete />} onClick={() => orderDelete(params.id)} />,
-                ];
+                let res = [<GridActionsCellItem label="info" icon={<InfoIcon />} onClick={() => orderInfo(params.id)} />]
+                if (userData?.role == "admin") {
+                    res.push(<GridActionsCellItem disabled={disableButton} label="update" icon={<UpdateIcon />} onClick={() => orderUpdate(params.id)} />,
+                        <GridActionsCellItem disabled={disableButton} label="remove" icon={<Delete />} onClick={() => orderDelete(params.id)} />)
+                }
+                return res;
             }
         }
     ]
 
     // const theme = useTheme()
-    const userData = useSelectorAuth();
+
     const orders: OrderType[] = useSelectorOrders();
     const columns = useMemo(() => getColumns(), [orders]);
 
@@ -119,7 +122,7 @@ const OrdersTable: React.FC = () => {
         // if (!isPortrait) {
         //     res = res.concat(columnsPortrait);
         // if (userData && userData.role == 'admin') {
-            res = res.concat(columnsAdmin);
+        res = res.concat(columnsAdmin);
         // }
         // } else {
         //     res = res.concat(columnDetails);

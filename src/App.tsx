@@ -54,9 +54,9 @@ function getRoutes(userData: UserDataType): RouteType[] {
         }
         return res
     });
-    if (userData) {
-        res[res.length - 1].label = userData.email;
-    }
+    // if (userData) {
+    //     res[res.length - 1].label = userData.email;
+    // }
     return res
 }
 
