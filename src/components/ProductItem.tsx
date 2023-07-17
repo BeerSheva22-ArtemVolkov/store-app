@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardActions, CardContent, CardHeader, CardMedia, IconButton, TextField, Typography, useMediaQuery, useTheme } from '@mui/material'
+import { Box, Button, ButtonGroup, Card, CardActions, CardContent, CardHeader, CardMedia, IconButton, Rating, TextField, Typography, useMediaQuery, useTheme } from '@mui/material'
 import ProductType from '../model/ProductType'
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -64,47 +64,52 @@ const ProductItem: React.FC<ProductItemProps> = ({ productItem }) => {
 
     return <Card sx={{ maxWidth: '100%', boxShadow: 'lg' }}>
         <CardMedia component='img' image={productItem.image} />
-        <CardContent>
+        <CardContent style={{ padding: '.5rem' }}>
             <Typography variant='body1'>{productItem.name}</Typography>
             <Typography variant='subtitle1'>{productItem.price}₪</Typography>
-            <Typography variant="body2">{productItem.description}</Typography>
-            {/* <Link
-                href="#product-card"
-                fontWeight="xl"
-                color="neutral"
-                textColor="text.primary"
-                overlay
-                endDecorator={<ArrowOutwardIcon />}
-            >
-                Super Rockez A400
-            </Link>  */}
+            <Box sx={{
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+            }}>
+                <Rating name="size-small" defaultValue={productItem.rating.rate} size="small" readOnly />
+                <Typography sx={{ fontSize: 12 }}>{`${productItem.rating.rate} / ${productItem.rating.count}`}</Typography>
+            </Box>
+        </CardContent>
+        <CardActions>
             <Box>
                 {itemCount ?
                     <Box>
-                        <Button variant="contained" onClick={incrementItemCart} >
-                            +
-                        </Button>
-                        <TextField
-                            type='number'
-                            onChange={onChangeFn}
-                            value={itemCount}
-                            variant='standard'
-                            inputProps={{
-                                min: 1,
-                                max: productItem.quantity
-                            }} />
-                        <Button variant="contained" onClick={decrementItemCart} >
-                            -
-                        </Button>
-                        <Button variant="contained" onClick={nullItemCart} endIcon={<DeleteIcon />} />
+                        <ButtonGroup>
+                            <Button variant="contained" onClick={decrementItemCart} >
+                                -
+                            </Button>
+                            <TextField
+                                type='tel'
+                                onChange={onChangeFn}
+                                value={itemCount}
+                                variant='standard'
+                                inputProps={{
+                                    min: 1,
+                                    max: productItem.quantity,
+                                    style: { textAlign: 'center', fontSize: 20 }
+                                }} />
+                            <Button variant="contained" onClick={incrementItemCart} >
+                                +
+                            </Button>
+                        </ButtonGroup>
+                        <Button variant="contained" color='error' onClick={nullItemCart} endIcon={<DeleteIcon />} fullWidth />
                     </Box>
                     :
-                    <Button variant="contained" onClick={addItemToCart} endIcon={<AddShoppingCartIcon />}>
-                        Add to cart
-                    </Button>
+                    <Box>
+                        <Button variant="contained" onClick={addItemToCart} endIcon={<AddShoppingCartIcon />} fullWidth>
+                            to cart
+                        </Button>
+                    </Box>
+
                 }
             </Box>
-        </CardContent>
+        </CardActions>
     </Card >
 }
 

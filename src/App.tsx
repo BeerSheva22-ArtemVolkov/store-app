@@ -45,6 +45,8 @@ function getRoutes(userData: UserDataType): RouteType[] {
             res.push(...noadmin)
         }
     } else {
+        console.log('noauth');
+        
         res.push(...noauthenticated);
     }
     res.sort((r1, r2) => {
