@@ -59,7 +59,7 @@ const RegistrationForm: React.FC<Props> = ({ submitFn }) => {
                 <CssBaseline />
                 <Box
                     sx={{
-                        marginTop: { xs: 8, sm: -4, md: 8 },
+                        marginTop: { xs: 1, sm: 1, md: 1 },
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
@@ -73,7 +73,7 @@ const RegistrationForm: React.FC<Props> = ({ submitFn }) => {
                     </Typography>
                     <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                         <Grid container justifyContent={'center'} spacing={1}>
-                            <Grid item xs={6} sm={6} md={6}>
+                            <Grid item xs={6} sm={12} md={6}>
                                 <TextField
                                     required
                                     fullWidth
@@ -83,7 +83,7 @@ const RegistrationForm: React.FC<Props> = ({ submitFn }) => {
                                     autoFocus
                                 />
                             </Grid>
-                            <Grid item xs={6} sm={6} md={6}>
+                            <Grid item xs={6} sm={12} md={6}>
                                 <TextField
                                     required
                                     fullWidth
@@ -92,7 +92,7 @@ const RegistrationForm: React.FC<Props> = ({ submitFn }) => {
                                     name="lname"
                                 />
                             </Grid>
-                            <Grid item xs={12} sm={6} md={12}>
+                            <Grid item xs={12} sm={12} md={12}>
                                 <TextField
                                     required
                                     fullWidth
@@ -122,7 +122,7 @@ const RegistrationForm: React.FC<Props> = ({ submitFn }) => {
                                     autoComplete="current-password"
                                 />
                             </Grid>
-                            <Grid item xs={12} sm={6} md={12}>
+                            <Grid item xs={12} sm={12} md={12}>
                                 <TextField
                                     fullWidth
                                     name="city"
@@ -130,7 +130,7 @@ const RegistrationForm: React.FC<Props> = ({ submitFn }) => {
                                     id="city"
                                 />
                             </Grid>
-                            <Grid item xs={8} sm={8} md={8}>
+                            <Grid item xs={6} sm={8} md={8}>
                                 <TextField
                                     fullWidth
                                     name="street"
@@ -138,24 +138,25 @@ const RegistrationForm: React.FC<Props> = ({ submitFn }) => {
                                     id="street"
                                 />
                             </Grid>
-                            <Grid item xs={2} sm={2} md={2}>
+                            <Grid item xs={3} sm={2} md={2}>
                                 <TextField
                                     fullWidth
+                                    type='tel'
                                     name="streetNumber"
                                     label="St№"
                                     id="streetNumber"
                                 />
                             </Grid>
-                            <Grid item xs={2} sm={2} md={2}>
+                            <Grid item xs={3} sm={2} md={2}>
                                 <TextField
                                     fullWidth
-                                    type='number'
+                                    type='tel'
                                     name="flatNumber"
                                     label="Fl№"
                                     id="flatNumber"
                                 />
                             </Grid>
-                            <Grid item xs={12} sm={6} md={12}>
+                            <Grid item xs={12} sm={12} md={12}>
                                 <Button
                                     type="submit"
                                     fullWidth

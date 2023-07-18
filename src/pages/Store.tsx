@@ -12,20 +12,73 @@ import StarIcon from '@mui/icons-material/Star';
 const MIN_PRICE = 0
 const MAX_PRICE = 10000
 
+const ratingsArray = [
+    {
+        name: 'f3',
+        rating: 3
+    },
+    {
+        name: 'f4',
+        rating: 4
+    },
+    {
+        name: 'none',
+        rating: 0
+    }
+]
+
+const deliveryArray = [
+    {
+        name: 'today',
+        deliveryDays: 0
+    },
+    {
+        name: 'todayOrTomorrow',
+        deliveryDays: 1
+    },
+    {
+        name: 'lessWeek',
+        deliveryDays: 7
+    },
+    {
+        name: 'none',
+        deliveryDays: 100
+    }
+]
+
 const Store: React.FC = () => {
 
     const products: ProductType[] = useSelectorProducts();
-    const [price, setPrice] = useState<number[]>([0, 0]);
-    const handleChange = (event: Event, newValue: number | number[]) => {
-        setPrice(newValue as number[]);
+    const [productsFiltered, setProductsFiltered] = useState<ProductType[]>(products)
+    const [priceFiltered, setPriceFiltered] = useState<number[]>([MIN_PRICE, MAX_PRICE]);
+    const [ratingFiltered, setRatingFiltered] = useState('none')
+    const [deliveryFiltered, serDeliveryFiltered] = useState('none')
+
+    const priceChange = (event: Event, newValue: number | number[]) => {
+        setPriceFiltered(newValue as number[]);
     };
+
+    const ratingChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setRatingFiltered((event.target as HTMLInputElement).value);
+    };
+
+    const deliveryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        serDeliveryFiltered((event.target as HTMLInputElement).value);
+    };
+
+    useEffect(() => {
+        setProductsFiltered(products
+            .filter(product => product.price <= priceFiltered[1] && product.price >= priceFiltered[0])
+            .filter(product => product.rating.rate >= ratingsArray.find(val => val.name == ratingFiltered)!.rating)
+            .filter(product => product.deliveryDays <= deliveryArray.find(val => val.name == deliveryFiltered)!.deliveryDays)
+        )
+    }, [products, priceFiltered, ratingFiltered, deliveryFiltered])
 
     return (
         <>
-            <Grid container paddingRight={'5vw'} paddingLeft={'5vw'} spacing={2}>
-                <Grid xs={3}>
+            <Grid container paddingRight={'5vw'} paddingLeft={'5vw'} spacing={1}>
+                <Grid xs={6} sm={3} lg={2}>
                     <Grid item xs={12}>
-                        {/* <Box> */}
                         <Typography variant="h5">
                             Price
                         </Typography>
@@ -37,14 +90,14 @@ const Store: React.FC = () => {
                                     variant="outlined"
                                     InputLabelProps={{ shrink: true }}
                                     sx={{ width: "90px" }}
-                                    value={price[0]}
+                                    value={priceFiltered[0]}
                                     inputProps={{
                                         min: MIN_PRICE,
                                         max: MAX_PRICE
                                     }}
                                     placeholder={`from ${MIN_PRICE}`}
                                     onChange={(e) => {
-                                        setPrice([Number(e.target.value), price[1]]);
+                                        setPriceFiltered([Number(e.target.value), priceFiltered[1]]);
                                     }}
                                 />
                                 <Typography>-</Typography>
@@ -54,25 +107,24 @@ const Store: React.FC = () => {
                                     variant="outlined"
                                     InputLabelProps={{ shrink: true }}
                                     sx={{ width: "90px" }}
-                                    value={price[1]}
+                                    value={priceFiltered[1]}
                                     inputProps={{
                                         min: MIN_PRICE,
                                         max: MAX_PRICE
                                     }}
                                     placeholder={`to ${MAX_PRICE}`}
                                     onChange={(e) => {
-                                        setPrice([price[0], Number(e.target.value)]);
+                                        setPriceFiltered([priceFiltered[0], Number(e.target.value)]);
                                     }}
                                 />
                             </Stack>
                             <Slider
-                                value={price}
-                                onChange={handleChange}
+                                value={priceFiltered}
+                                onChange={priceChange}
                                 min={MIN_PRICE}
                                 max={MAX_PRICE}
                             />
                         </Box>
-                        {/* </Box> */}
                     </Grid>
                     <Divider></Divider>
                     <Grid item xs={12}>
@@ -82,28 +134,29 @@ const Store: React.FC = () => {
                             </Typography>
                             <Box>
                                 <RadioGroup
-                                    aria-labelledby="demo-radio-buttons-group-label"
-                                    defaultValue="female"
-                                    name="radio-buttons-group"
+                                    value={ratingFiltered}
+                                    onChange={ratingChange}
                                 >
-                                    <FormControlLabel value="f3" control={<Radio />} label={<>
-                                        <>from</>
+                                    <FormControlLabel value='f3' control={<Radio />} label={<>
+                                        from
                                         <Rating
                                             name="text-feedback"
                                             value={3}
                                             readOnly
                                             precision={0.5}
                                             emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
-                                        /></>} />
+                                        />
+                                    </>} />
                                     <FormControlLabel value="f4" control={<Radio />} label={<>
-                                        <>from</>
+                                        from
                                         <Rating
                                             name="text-feedback"
                                             value={4}
                                             readOnly
                                             precision={0.5}
                                             emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
-                                        /></>} />
+                                        />
+                                    </>} />
                                     <FormControlLabel value="none" control={<Radio />} label="Doesn't metter" />
                                 </RadioGroup>
                             </Box>
@@ -117,9 +170,8 @@ const Store: React.FC = () => {
                             </Typography>
                             <Box>
                                 <RadioGroup
-                                    aria-labelledby="demo-radio-buttons-group-label"
-                                    defaultValue="female"
-                                    name="radio-buttons-group"
+                                    value={deliveryFiltered}
+                                    onChange={deliveryChange}
                                 >
                                     <FormControlLabel value="today" control={<Radio />} label="Today" />
                                     <FormControlLabel value="todayOrTomorrow" control={<Radio />} label="Today or tomorrow" />
@@ -130,16 +182,15 @@ const Store: React.FC = () => {
                         </Box>
                     </Grid>
                     <Divider></Divider>
-                    <Grid item xs={12}>
+                    {/* <Grid item xs={12}>
                         <Button variant="contained" disableElevation fullWidth>
                             Submit filters
                         </Button>
-                    </Grid>
+                    </Grid> */}
                 </Grid>
-                <Grid container xs={9}>
-                    <StoreTable />
+                <Grid container xs={6} sm={9} lg={10} columnSpacing={1}>
+                    <StoreTable products={productsFiltered} />
                 </Grid>
-
             </Grid>
         </>
     )

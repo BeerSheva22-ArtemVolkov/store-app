@@ -63,7 +63,9 @@ const ProductItem: React.FC<ProductItemProps> = ({ productItem }) => {
     }
 
     return <Card sx={{ maxWidth: '100%', boxShadow: 'lg' }}>
-        <CardMedia component='img' image={productItem.image} />
+        <Box>
+            <CardMedia component='img' image={productItem.image} sx={{ height: '250px' }} />
+        </Box>
         <CardContent style={{ padding: '.5rem' }}>
             <Typography variant='body1'>{productItem.name}</Typography>
             <Typography variant='subtitle1'>{productItem.price}₪</Typography>
@@ -73,7 +75,7 @@ const ProductItem: React.FC<ProductItemProps> = ({ productItem }) => {
                 alignItems: 'center',
             }}>
                 <Rating name="size-small" defaultValue={productItem.rating.rate} size="small" readOnly />
-                <Typography sx={{ fontSize: 12 }}>{`${productItem.rating.rate} / ${productItem.rating.count}`}</Typography>
+                <Typography sx={{ fontSize: 11 }}>{`${productItem.rating.rate} / ${productItem.rating.count}`}</Typography>
             </Box>
         </CardContent>
         <CardActions>
@@ -106,7 +108,6 @@ const ProductItem: React.FC<ProductItemProps> = ({ productItem }) => {
                             to cart
                         </Button>
                     </Box>
-
                 }
             </Box>
         </CardActions>

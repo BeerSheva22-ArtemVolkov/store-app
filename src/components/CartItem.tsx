@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardActions, CardContent, CardHeader, CardMedia, IconButton, TextField, Typography, useMediaQuery, useTheme } from '@mui/material'
+import { Box, Button, ButtonGroup, Card, CardActions, CardContent, CardHeader, CardMedia, Grid, IconButton, TextField, Typography, useMediaQuery, useTheme } from '@mui/material'
 import ProductType from '../model/ProductType'
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -63,46 +63,48 @@ const CartItem: React.FC<CartItemProps> = ({ cartItem }) => {
 
 
 
-    return <Card sx={{ maxWidth: '100%', boxShadow: 'lg' }}>
-        <CardMedia component='img' image={cartItem.image} sx={{ width: 151 }} />
-        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-            <CardContent>
-                <Typography variant='body1'>{cartItem.name}</Typography>
-                <Typography variant='subtitle1'>x{itemCount} {cartItem.price * itemCount}₪</Typography>
-                <Typography variant="body2">{cartItem.description}</Typography>
-                {/* <Link
-                href="#product-card"
-                fontWeight="xl"
-                color="neutral"
-                textColor="text.primary"
-                overlay
-                endDecorator={<ArrowOutwardIcon />}
-            >
-                Super Rockez A400
-            </Link>  */}
-                <Box>
+    return <Card sx={{ maxWidth: '100%', boxShadow: 'lg', }} >
+        <Grid container spacing={1}>
+            <Grid xs={4}>
+                <CardMedia component='img' image={cartItem.image} sx={{ height: '100%', width: '100%' }} />
+            </Grid>
+            <Grid xs={8}>
+                <CardContent>
+                    <Typography variant='h3'>{cartItem.name}</Typography>
                     <Box>
-                        <Button variant="contained" onClick={decrementItemCart} >
-                            -
-                        </Button>
-                        <TextField
-                            type='number'
-                            onChange={onChangeFn}
-                            value={itemCount}
-                            variant='standard'
-                            inputProps={{
-                                min: 1,
-                                max: products.find(product => product.id == cartItem.id)?.quantity || 100
-                            }} />
-                        <Button variant="contained" onClick={incrementItemCart} >
-                            +
-                        </Button>
 
-                        <Button variant="contained" onClick={deleteItemCart} endIcon={<DeleteIcon />} />
+                        <Typography variant='h6'>x{itemCount} {cartItem.price * itemCount}₪</Typography>
                     </Box>
+                    <Box>
+                        <Box>
+                            <ButtonGroup fullWidth>
+                                <Button variant="contained" onClick={decrementItemCart} >
+                                    -
+                                </Button>
+                                <TextField
+                                    type='tel'
+                                    onChange={onChangeFn}
+                                    value={itemCount}
+                                    variant='standard'
+                                    inputProps={{
+                                        min: 1,
+                                        max: products.find(product => product.id == cartItem.id)?.quantity || 100,
+                                        style: { textAlign: 'center', fontSize: 20 }
+                                    }} />
+                                <Button variant="contained" onClick={incrementItemCart} >
+                                    +
+                                </Button>
+                            </ButtonGroup>
 
-                </Box>
-            </CardContent>
+                            <Button variant="contained" color='error' onClick={deleteItemCart} endIcon={<DeleteIcon />} fullWidth />
+                        </Box>
+                    </Box>
+                </CardContent>
+            </Grid>
+        </Grid>
+
+        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+
 
         </Box>
     </Card >

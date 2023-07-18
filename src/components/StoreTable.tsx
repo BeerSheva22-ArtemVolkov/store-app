@@ -6,13 +6,16 @@ import { Subscription } from "rxjs";
 import { useSelectorProducts } from "../hooks/hooks";
 import ProductItem from "../components/ProductItem";
 
+type storeTableProps = {
+    products: ProductType[]
+}
 
-const StoreTable: React.FC = () => {
+const StoreTable: React.FC<storeTableProps> = ({ products }) => {
 
-    const products: ProductType[] = useSelectorProducts();
+    // const products: ProductType[] = useSelectorProducts();
 
     return (
-        <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }} alignItems="stretch" justifyContent="flex-start" padding="1vw" >
+        <Grid container spacing={{ xs: 1, md: 3 }} columns={{ xs: 1, sm: 8, md: 12 }} alignItems="stretch" justifyContent="flex-start" padding="2vw" >
             {
                 products.map(product => {
                     return <Grid item xs={1} sm={4} md={3} xl={4} key={product.id}>

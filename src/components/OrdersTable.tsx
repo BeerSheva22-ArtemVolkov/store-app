@@ -1,4 +1,4 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, MenuItem, Modal, Select, Typography, useTheme } from "@mui/material"
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, MenuItem, Modal, Select, Typography, useMediaQuery, useTheme } from "@mui/material"
 import OrderType from "../model/OrderType";
 import { useSelectorOrders } from "../hooks/hooks";
 import { DataGrid, GridActionsCellItem, GridColDef } from "@mui/x-data-grid";
@@ -15,29 +15,6 @@ import { useSelectorAuth } from "../redux/store";
 import StatusType from "../model/StatusType";
 import OrderStatusType, { OrderStatusTypeArray } from "../model/OrderStatusType";
 
-const columnsCommon: GridColDef[] = [
-    {
-        field: 'id', headerName: 'ID', flex: 0.3, headerClassName: 'data-grid-header',
-        align: 'center', headerAlign: 'center',
-    },
-    {
-        field: 'status', headerName: 'Status', flex: 0.3, headerClassName: 'data-grid-header',
-        align: 'center', headerAlign: 'center'
-    },
-    {
-        field: 'dateStart', headerName: 'Date of order', flex: 0.5, headerClassName: 'data-grid-header',
-        align: 'center', headerAlign: 'center'
-    },
-    {
-        field: 'dateEnd', headerName: 'Changing date', flex: 0.5, headerClassName: 'data-grid-header',
-        align: 'center', headerAlign: 'center'
-    },
-    {
-        field: 'total', headerName: 'Total ₪', flex: 0.3, headerClassName: 'data-grid-header',
-        align: 'center', headerAlign: 'center'
-    }
-]
-
 const style = {
     position: 'absolute' as 'absolute',
     top: '50%',
@@ -50,25 +27,54 @@ const style = {
     p: 4,
 };
 
-type OrdersTableProps = {
-
-}
-
 const OrdersTable: React.FC = () => {
 
     const userData = useSelectorAuth();
+    const theme = useTheme();
+    const isSM = useMediaQuery(theme.breakpoints.down('sm'));
+    const isMD = useMediaQuery(theme.breakpoints.down('md'));
+    const isLG = useMediaQuery(theme.breakpoints.down('lg'));
 
-    const columnsAdmin: GridColDef[] = [
+    const startColumns: GridColDef[] = [
         {
-            field: 'userEmail', headerName: 'Customer email', flex: 0.7, headerClassName: 'data-grid-header',
-            align: 'center', headerAlign: 'center'
+            field: 'id', headerName: 'ID', flex: 0.15, headerClassName: 'data-grid-header',
+            align: 'left', headerAlign: 'left',
         },
         {
-            field: 'updatedBy', headerName: 'Updated By', flex: 0.7, headerClassName: 'data-grid-header',
-            align: 'center', headerAlign: 'center'
+            field: 'status', headerName: 'Status', flex: 0.15, headerClassName: 'data-grid-header',
+            align: 'left', headerAlign: 'left'
+        }
+    ]
+
+    const mdColumns: GridColDef[] = [
+        {
+            field: 'dateStart', headerName: 'Order date', flex: 0.2, headerClassName: 'data-grid-header',
+            align: 'left', headerAlign: 'left'
         },
         {
-            field: 'actions', type: "actions", flex: 0.7, getActions: (params) => {
+            field: 'dateEnd', headerName: 'Update date', flex: 0.2, headerClassName: 'data-grid-header',
+            align: 'left', headerAlign: 'left'
+        }
+    ]
+
+    const adminColumns: GridColDef[] = [
+        {
+            field: 'userEmail', headerName: 'Customer email', flex: 0.2, headerClassName: 'data-grid-header',
+            align: 'left', headerAlign: 'left'
+        },
+        {
+            field: 'updatedBy', headerName: 'Updated By', flex: 0.2, headerClassName: 'data-grid-header',
+            align: 'left', headerAlign: 'left'
+        }
+    ]
+
+    const endColumns: GridColDef[] = [
+        {
+            field: 'total', headerName: 'Total ₪', flex: 0.15, headerClassName: 'data-grid-header',
+            align: 'left', headerAlign: 'left'
+        },
+        {
+            field: 'actions', type: "actions", flex: 0.2, getActions: (params) => {
                 const row: OrderType = params.row
                 const disableButton: boolean = row.status == "Deleted" || row.status == "Done"
                 let res = [<GridActionsCellItem label="info" icon={<InfoIcon />} onClick={() => orderInfo(params.id)} />]
@@ -81,10 +87,8 @@ const OrdersTable: React.FC = () => {
         }
     ]
 
-    // const theme = useTheme()
-
     const orders: OrderType[] = useSelectorOrders();
-    const columns = useMemo(() => getColumns(), [orders]);
+    const columns = useMemo(() => getColumns(), [orders, isSM, isMD, isLG]);
 
     const [currentOrders, setCurrentOrders] = useState<OrderType[]>(orders)
     const [infoOpened, setInfoOpened] = useState<boolean>(false)
@@ -92,9 +96,7 @@ const OrdersTable: React.FC = () => {
     const [updateOpened, setUpdateOpened] = useState<boolean>(false)
     const [status, setStatus] = useState<OrderStatusType>('New')
     const [orderID, setOrderID] = useState<any>('')
-    const [cartItems, setCartItems] = useState<ProductType[]>([])
-    const [orderStatuses, setOrderStatuses] = useState(OrderStatusTypeArray)
-    const [columnsOrder, setColumnsOrder] = useState<string[]>([])
+    const [order, setOrder] = useState<OrderType | undefined>()
 
     useEffect(() => {
         setCurrentOrders(userData && userData.role == 'admin' ? orders : orders.filter(order => order.userEmail == userData?.email))
@@ -102,7 +104,7 @@ const OrdersTable: React.FC = () => {
 
     function orderInfo(id: any) {
         setOrderID(id)
-        setCartItems(orders.find(item => item.id == id)!.cart)
+        setOrder(orders.find(item => item.id == id))
         setInfoOpened(true)
     }
 
@@ -118,16 +120,14 @@ const OrdersTable: React.FC = () => {
     }
 
     function getColumns(): GridColDef[] {
-        let res: GridColDef[] = columnsCommon;
-        // if (!isPortrait) {
-        //     res = res.concat(columnsPortrait);
-        // if (userData && userData.role == 'admin') {
-        res = res.concat(columnsAdmin);
-        // }
-        // } else {
-        //     res = res.concat(columnDetails);
-        // }
-
+        let res: GridColDef[] = startColumns;
+        if (!isMD) {
+            res = res.concat(mdColumns);
+        }
+        if (userData && userData.role == 'admin' && !isLG) {
+            res = res.concat(adminColumns);
+        }
+        res = res.concat(endColumns);
         return res;
     }
 
@@ -150,35 +150,18 @@ const OrdersTable: React.FC = () => {
         setStatus(event.target.value)
     }
 
-    // useEffect(() => {
-    //     const order: OrderType | undefined = orders.find(item => item.id == orderID)
-    //     if (order){
-    //         const currentOrderStatus = order.status
-    //         console.log(currentOrderStatus);
-
-    //         const currentOrderStatusIndex = orderStatuses.findIndex(status => status == currentOrderStatus)
-    //         console.log(currentOrderStatusIndex);
-    //         setOrderStatuses(orderStatuses.slice(currentOrderStatusIndex + 1, OrderStatusTypeArray.length))
-    //     }
-
-    // }, [orderID])
-
     return (
         <Box>
             <Box sx={{ height: '80vh', width: '95vw' }}>
                 <DataGrid columns={columns} rows={currentOrders} />
             </Box>
 
-            <Modal
-                open={infoOpened}
-                onClose={() => {
-                    setInfoOpened(false)
-                }}
-            >
-                <Box sx={style}>
-                    <OrderInfoItem orderProducts={cartItems} />
+            <Dialog open={infoOpened} onClose={() => setInfoOpened(false)} fullWidth maxWidth={"xl"}>
+                {/* <Box sx={style}> */}
+                <Box>
+                    <OrderInfoItem order={order!} />
                 </Box>
-            </Modal>
+            </Dialog>
 
             <Dialog open={deleteOpened} onClose={closeDeleteDialog} fullWidth maxWidth={"xs"}>
                 <DialogTitle>Delete order</DialogTitle>
@@ -222,7 +205,7 @@ const OrdersTable: React.FC = () => {
                 </DialogActions>
             </Dialog>
 
-        </Box>
+        </Box >
     )
 }
 

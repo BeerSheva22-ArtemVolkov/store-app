@@ -81,7 +81,7 @@ const SignInForm: React.FC<Props> = ({ submitFn }) => {
                 <CssBaseline />
                 <Box
                     sx={{
-                        marginTop: { xs: 8, sm: -4, md: 8 },
+                        marginTop: { xs: 1, sm: 1, md: 1 },
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
@@ -95,7 +95,7 @@ const SignInForm: React.FC<Props> = ({ submitFn }) => {
                     </Typography>
                     <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                         <Grid container justifyContent={'center'} spacing={1}>
-                            <Grid item xs={12} sm={6} md={12}>
+                            <Grid item xs={12} sm={12} md={12}>
                                 <TextField
                                     margin="normal"
                                     required
@@ -107,7 +107,7 @@ const SignInForm: React.FC<Props> = ({ submitFn }) => {
                                     autoFocus
                                 />
                             </Grid>
-                            <Grid item xs={12} sm={6} md={12}>
+                            <Grid item xs={12} sm={12} md={12}>
                                 <TextField
                                     margin="normal"
                                     required
@@ -119,7 +119,7 @@ const SignInForm: React.FC<Props> = ({ submitFn }) => {
                                     autoComplete="current-password"
                                 />
                             </Grid>
-                            <Grid item xs={12} sm={6} md={12}>
+                            <Grid item xs={12} sm={12} md={12}>
                                 <Button
                                     type="submit"
                                     fullWidth
@@ -130,7 +130,7 @@ const SignInForm: React.FC<Props> = ({ submitFn }) => {
                                 </Button>
                             </Grid>
                             <Divider sx={{ width: '100%', fontWeight: 'bold' }}>or</Divider>
-                            <Grid item xs={12} sm={6} md={12}>
+                            <Grid item xs={12} sm={12} md={12}>
                                 <Button
                                     type="submit"
                                     fullWidth
@@ -141,7 +141,7 @@ const SignInForm: React.FC<Props> = ({ submitFn }) => {
                                     Sign In with Google
                                 </Button>
                             </Grid>
-                            <Grid item xs={12} sm={6} md={12}>
+                            <Grid item xs={12} sm={12} md={12}>
                                 <Button
                                     type="submit"
                                     fullWidth

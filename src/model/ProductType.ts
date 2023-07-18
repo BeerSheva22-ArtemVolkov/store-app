@@ -1,5 +1,6 @@
 type ProductType = {
     id?: any
+    deliveryDays: number
     name: string
     price: number
     quantity: number

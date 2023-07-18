@@ -67,14 +67,14 @@ const Products: React.FC = () => {
 
     return <Box>
         
-        <ProductsTable openEdit={openEdit} openDelete={openDelete} ></ProductsTable>
+        <ProductsTable openEdit={openEdit} openDelete={openDelete}></ProductsTable>
 
         <Dialog
             open={productChangeDialog}
             keepMounted
             onClose={productChangeClose}
         >
-            <DialogTitle>{product ? "Update product" : "Add new product"}</DialogTitle>
+            <DialogTitle>{product ? "Product" : "Add new product"}</DialogTitle>
             <DialogContent>
                 <ProductForm product={product ? product : undefined} submitFn={product ? updateFn : addFn}></ProductForm>
             </DialogContent>
