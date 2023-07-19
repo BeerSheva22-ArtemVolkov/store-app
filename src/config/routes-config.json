@@ -2,8 +2,8 @@
     "always": [
         {
             "to": "/",
-            "label": "Home",
-            "type": "general",
+            "label": "Art Store",
+            "type": "home",
             "order": 1
         }
     ],
@@ -49,15 +49,9 @@
         {
             "to": "/cart",
             "label": "Shopping Cart",
-            "type": "general",
+            "type": "cart",
             "icon": "ShoppingCart",
             "order": 99
-        },
-        {
-            "to": "/store",
-            "label": "Store",
-            "type": "general",
-            "order": 2
         }
     ],
     "noauthenticated": [
@@ -72,12 +66,6 @@
             "label": "Sign In",
             "type": "account",
             "order": 9
-        },
-        {
-            "to": "/store",
-            "label": "Store",
-            "type": "general",
-            "order": 2
         },
         {
             "to": "/cart",

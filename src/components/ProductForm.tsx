@@ -200,7 +200,7 @@ const AddProduct: React.FC<productProps> = ({ product, submitFn }) => {
                                     InputProps={{ readOnly: !editMode }}
                                 />
                             </Grid>
-                            {editMode && <Grid item xs={12}>
+                            {(editMode || !product) && <Grid item xs={12}>
                                 <Button
                                     type="submit"
                                     fullWidth
@@ -209,7 +209,7 @@ const AddProduct: React.FC<productProps> = ({ product, submitFn }) => {
                                     {product ? "Update product" : "Add new product"}
                                 </Button>
                             </Grid>}
-                            {editMode && <Grid item xs={12}>
+                            {(editMode || !product) && <Grid item xs={12}>
                                 <Button
                                     type="reset"
                                     fullWidth

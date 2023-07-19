@@ -1,11 +1,12 @@
-import { AppBar, Avatar, Box, Button, Drawer, IconButton, InputBase, List, ListItemButton, ListItemIcon, ListItemText, Menu, MenuItem, Tab, Toolbar, Tooltip, Typography, alpha, styled } from "@mui/material"
+import { AppBar, Avatar, Box, Button, CssBaseline, Divider, Drawer, Icon, IconButton, InputBase, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Menu, MenuItem, SvgIconTypeMap, Tab, Tabs, Toolbar, Tooltip, Typography, alpha, styled } from "@mui/material"
 import RouteType from "../model/RouteType"
 import { ReactNode, useEffect, useState } from "react";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { ShoppingCart, AccountCircle, Logout, PersonAdd, Settings } from '@mui/icons-material'
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 import Badge from '@mui/material/Badge';
-import { useSelectorAuth, useSelectorCart } from "../redux/store";
+import { useSelector } from "react-redux";
+import { useSelectorCart } from "../redux/store";
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import PagesType from "../model/PagesType";
@@ -20,8 +21,12 @@ const Search = styled('div')(({ theme }) => ({
         backgroundColor: alpha(theme.palette.common.white, 0.25),
     },
     marginRight: theme.spacing(2),
-    marginLeft: theme.spacing(2),
+    marginLeft: 0,
     width: '100%',
+    [theme.breakpoints.up('sm')]: {
+        marginLeft: theme.spacing(3),
+        width: 'auto',
+    },
 }));
 
 const SearchIconWrapper = styled('div')(({ theme }) => ({
@@ -41,20 +46,29 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
         // vertical padding + font size from searchIcon
         paddingLeft: `calc(1em + ${theme.spacing(4)})`,
         transition: theme.transitions.create('width'),
-        width: '20vw',
+        width: '100%',
         [theme.breakpoints.up('md')]: {
-            width: '20vw',
+            width: '20ch',
         },
     },
 }));
 
-const Navigator: React.FC<{ routes: RouteType[] }> = ({ routes }) => {
+const DrawerHeader = styled('div')(({ theme }) => ({
+    display: 'flex',
+    alignItems: 'center',
+    padding: theme.spacing(0, 1),
+    // necessary for content to be below app bar
+    ...theme.mixins.toolbar,
+    justifyContent: 'flex-end',
+}));
 
-    // const navigate = useNavigate();
-    // const location = useLocation();
-    // const [value, setValue] = useState(0);
+const UserNavigator: React.FC<{ routes: RouteType[] }> = ({ routes }) => {
+
+    const navigate = useNavigate();
+    const location = useLocation();
+    const [value, setValue] = useState(0);
     const cart = useSelectorCart()
-    const userData = useSelectorAuth();
+
     const [catalogHistory, setCatalogHistory] = useState<PagesType[]>([])
     const [catalog, setCatalog] = useState(getCatalog(pages))
 
@@ -117,12 +131,8 @@ const Navigator: React.FC<{ routes: RouteType[] }> = ({ routes }) => {
     //     setValue(index);
     // }, [routes])
 
-    // function onChangeFn(event: any, newValue: number) {
-    //     setValue(newValue);
-    // }
-
-    function getHome(): ReactNode {
-        return routes.filter(route => route.type == 'home').map(r => <Tab component={NavLink} to={r.to} label={r.icon ? '' : r.label} key={r.label} icon={r.icon ? getIcon(r.icon) : undefined} />)
+    function onChangeFn(event: any, newValue: number) {
+        setValue(newValue);
     }
 
     function getTabs(): ReactNode {
@@ -134,6 +144,7 @@ const Navigator: React.FC<{ routes: RouteType[] }> = ({ routes }) => {
     }
 
     function getCatalog(pages: PagesType) {
+        // return routes.filter(route => route.type == 'store').map(r => <ListItemButton><Tab component={NavLink} to={r.to} label={r.icon ? '' : r.label} key={r.label} icon={r.icon ? getIcon(r.icon) : undefined} /></ListItemButton>)
         return <>
             {
                 pages.sub.length ?
@@ -174,31 +185,93 @@ const Navigator: React.FC<{ routes: RouteType[] }> = ({ routes }) => {
     }
 
     return <Box>
+        {/* <AppBar sx={{ backgroundColor: "gray" }}>
+            <Tabs value={value < routes.length ? value : 0} onChange={onChangeFn} centered={false}>
+                {getTabs()}
+                <Box style={{ position: 'fixed', right: 16 }}>
+                    {getCartTab()}
+                    <Tooltip title="Account settings" >
+                        <IconButton
+                            onClick={handleClick}
+                            size="small"
+                            sx={{ ml: 2 }}
+                            aria-controls={open ? 'account-menu' : undefined}
+                            aria-haspopup="true"
+                            aria-expanded={open ? 'true' : undefined}
+                        >
+                            <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+                        </IconButton>
+                    </Tooltip>
+                </Box>
+
+                <Menu
+                    anchorEl={anchorEl}
+                    id="account-menu"
+                    open={open}
+                    onClose={handleClose}
+                    onClick={handleClose}
+                    PaperProps={{
+                        elevation: 0,
+                        sx: {
+                            overflow: 'visible',
+                            filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                            // mt: 1.5,
+                            '& .MuiAvatar-root': {
+                                width: 32,
+                                height: 32,
+                                // ml: -0.5,
+                                // mr: 1,
+                            },
+                            '&:before': {
+                                content: '""',
+                                display: 'block',
+                                position: 'absolute',
+                                top: 0,
+                                right: 14,
+                                width: 10,
+                                height: 10,
+                                bgcolor: 'background.paper',
+                                transform: 'translateY(-50%) rotate(45deg)',
+                                zIndex: 0,
+                            },
+                        },
+                    }}
+                    transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                    anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                >
+                    {routes.filter(route => route.type == 'account').map(r => {
+                        return <MenuItem sx={{ margin: 0, p: 0 }}>
+                            <Tab component={NavLink} to={r.to} label={r.label} key={r.label} iconPosition="start" icon={r.icon ? getIcon(r.icon) : undefined} />
+                        </MenuItem>
+                    })}
+                </Menu>
+            </Tabs>
+        </AppBar> */}
+
         <AppBar position="static">
             <Toolbar>
-                <Box ml={0}>
-                    {getHome()}
-                </Box>
-                <Box sx={{ flexGrow: 1 }} />
-                <Box sx={{ display: { md: 'flex' } }}>
-                    {getTabs()}
-                    {getCartTab()}
-                    <IconButton
-                        onClick={handleClick}
-                        size="small"
-                        // sx={{ ml: 2 }}
-                        aria-controls={open ? 'account-menu' : undefined}
-                        aria-haspopup="true"
-                        aria-expanded={open ? 'true' : undefined}
+                <Button variant="contained" startIcon={<MenuIcon />} color="secondary" onClick={toggleDrawerOpened}>
+                    Каталог
+                </Button>
+                {/* <IconButton
+                    size="large"
+                    edge="start"
+                    color="inherit"
+                    aria-label="open drawer"
+                    sx={{ mr: 2 }}
+                >
+                    <MenuIcon />
+                </IconButton> */}
+                <Box ml={3}>
+                    <Typography
+                        variant="h6"
+                        noWrap
+                        component="div"
+                        sx={{ display: { xs: 'none', sm: 'block' } }}
                     >
-                        <Avatar sx={{ width: 32, height: 32 }}>{userData?.email.charAt(0).toUpperCase() || '?'}</Avatar>
-                    </IconButton>
+                        Art Shop
+                    </Typography>
                 </Box>
-            </Toolbar>
-            <Toolbar>
-                {userData?.role != 'admin' && <Button variant="contained" startIcon={<MenuIcon />} color="secondary" onClick={toggleDrawerOpened}>
-                    Catalog
-                </Button>}
                 <Search>
                     <SearchIconWrapper>
                         <SearchIcon />
@@ -208,6 +281,29 @@ const Navigator: React.FC<{ routes: RouteType[] }> = ({ routes }) => {
                         inputProps={{ 'aria-label': 'search' }}
                     />
                 </Search>
+                <Box sx={{ flexGrow: 1 }} />
+                <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+                    {/* <IconButton
+                        size="large"
+                        aria-label="show 17 new notifications"
+                        color="inherit"
+                    >
+                        <Badge badgeContent={17} color="error">
+                            <NotificationsIcon />
+                        </Badge>
+                    </IconButton> */}
+                    {getCartTab()}
+                    <IconButton
+                        onClick={handleClick}
+                        size="small"
+                        sx={{ ml: 2 }}
+                        aria-controls={open ? 'account-menu' : undefined}
+                        aria-haspopup="true"
+                        aria-expanded={open ? 'true' : undefined}
+                    >
+                        <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+                    </IconButton>
+                </Box>
             </Toolbar>
             <Drawer open={drawerOpened} onClose={toggleDrawerOpened} anchor="left" style={{ width: '100%' }}>
                 <Box sx={{ width: '250px' }}>
@@ -259,8 +355,9 @@ const Navigator: React.FC<{ routes: RouteType[] }> = ({ routes }) => {
             </Menu>
         </AppBar>
 
+
         <Outlet></Outlet>
     </Box>
 }
 
-export default Navigator
+export default UserNavigator

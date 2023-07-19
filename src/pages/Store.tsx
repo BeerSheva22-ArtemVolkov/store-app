@@ -1,4 +1,4 @@
-import { Box, Button, Divider, FormControlLabel, Grid, Paper, Radio, RadioGroup, Rating, Stack, TextField, Typography, styled, useTheme } from "@mui/material"
+import { Box, Button, ButtonGroup, Chip, Divider, FormControl, FormControlLabel, Grid, InputLabel, MenuItem, OutlinedInput, Paper, Radio, RadioGroup, Rating, Select, SelectChangeEvent, Stack, TextField, Typography, styled, useTheme } from "@mui/material"
 import { DataGrid, GridActionsCellItem, GridColDef } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import ProductType from "../model/ProductType";
@@ -46,13 +46,39 @@ const deliveryArray = [
     }
 ]
 
+const sortType = [
+    {
+        type: 'none',
+        name: 'From newwest'
+    },
+    {
+        type: 'priceAscending',
+        name: 'Price ascending'
+    },
+    {
+        type: 'priceDescending',
+        name: 'Price descending'
+    },
+    {
+        type: 'ratingAscending',
+        name: 'Rating ascending'
+    },
+    {
+        type: 'ratingDescending',
+        name: 'Rating descending'
+    }
+]
+
 const Store: React.FC = () => {
 
     const products: ProductType[] = useSelectorProducts();
+    console.log('products init', products);
+    
     const [productsFiltered, setProductsFiltered] = useState<ProductType[]>(products)
     const [priceFiltered, setPriceFiltered] = useState<number[]>([MIN_PRICE, MAX_PRICE]);
     const [ratingFiltered, setRatingFiltered] = useState('none')
     const [deliveryFiltered, serDeliveryFiltered] = useState('none')
+    const [sortingType, setSortingType] = useState('none')
 
     const priceChange = (event: Event, newValue: number | number[]) => {
         setPriceFiltered(newValue as number[]);
@@ -66,6 +92,12 @@ const Store: React.FC = () => {
         serDeliveryFiltered((event.target as HTMLInputElement).value);
     };
 
+    const sortChange = (event: SelectChangeEvent) => {
+        console.log(event.target.value);
+        
+        setSortingType(event.target.value as string);
+    };
+
     useEffect(() => {
         setProductsFiltered(products
             .filter(product => product.price <= priceFiltered[1] && product.price >= priceFiltered[0])
@@ -73,6 +105,29 @@ const Store: React.FC = () => {
             .filter(product => product.deliveryDays <= deliveryArray.find(val => val.name == deliveryFiltered)!.deliveryDays)
         )
     }, [products, priceFiltered, ratingFiltered, deliveryFiltered])
+
+    useEffect(() => {
+        console.log('sorting...');
+        
+        let productsSort: ProductType[] = []
+        switch (sortingType) {
+            case 'priceAscending':                
+                productsSort = productsFiltered.sort((p1, p2) => p2.price - p1.price)
+                break
+            case 'priceDescending':
+                productsSort = productsFiltered.sort((p1, p2) => p1.price - p2.price)
+                break
+            case 'ratingAscending':
+                productsSort = productsFiltered.sort((p1, p2) => p2.rating.rate - p1.rating.rate)
+                break
+            case 'ratingDescending':
+                productsSort = productsFiltered.sort((p1, p2) => p1.rating.rate - p2.rating.rate)
+                break
+            default:
+                productsSort = products
+        }        
+        setProductsFiltered(productsSort)
+    }, [sortingType])
 
     return (
         <>
@@ -188,7 +243,15 @@ const Store: React.FC = () => {
                         </Button>
                     </Grid> */}
                 </Grid>
-                <Grid container xs={6} sm={9} lg={10} columnSpacing={1}>
+                <Grid container xs={6} sm={9} lg={10} columnSpacing={1} justifyContent={'center'}>
+                    <FormControl sx={{ m: 1, width: 300 }}>
+                        <Select
+                            value={sortingType}
+                            onChange={sortChange}
+                        >
+                            {sortType.map(type => <MenuItem value={type.type}>{type.name}</MenuItem>)}
+                        </Select>
+                    </FormControl>
                     <StoreTable products={productsFiltered} />
                 </Grid>
             </Grid>

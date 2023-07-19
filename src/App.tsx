@@ -26,8 +26,18 @@ import { authActions } from './redux/slices/authSlice';
 import { authService } from './config/service-config';
 import { codeActions } from './redux/slices/codeSlice';
 import Products from './pages/Products';
+import TestPage from './pages/TestPage';
+import PagesType from './model/PagesType';
+import pages from './config/store-pages';
 
 const { always, authenticated, admin, noadmin, noauthenticated, development } = routesConfig;
+
+function getStoreRoutes(obj: PagesType) {
+    return <Route path={obj.to}>
+        <Route index element={obj.element} />
+        {obj.sub.length && obj.sub.map(o => getStoreRoutes(o))}
+    </Route>
+}
 
 function getRoutes(userData: UserDataType): RouteType[] {
     const res: RouteType[] = [];
@@ -46,7 +56,7 @@ function getRoutes(userData: UserDataType): RouteType[] {
         }
     } else {
         console.log('noauth');
-        
+
         res.push(...noauthenticated);
     }
     res.sort((r1, r2) => {
@@ -56,9 +66,6 @@ function getRoutes(userData: UserDataType): RouteType[] {
         }
         return res
     });
-    // if (userData) {
-    //     res[res.length - 1].label = userData.email;
-    // }
     return res
 }
 
@@ -99,11 +106,15 @@ const App: React.FC = () => {
                 </Route>
                 {/* <Route path='/admin' element={<AdminAccount />} > */}
                 <Route path='orders' element={<SellerOrders />} />
+                <Route path='test' element={<TestPage name={'test'} />} />
                 <Route path='adminorders' element={<SellerOrders />} />
                 {/* <Route path='addproduct' element={<AddProduct />} /> */}
-                <Route path='products' element={<Products />} />
+                <Route path='/products' >
+                    <Route index element={<Products />} />
+                    <Route path='' element={<CustomerOrders />} />
+                </Route>
                 {/* </Route> */}
-                <Route path='store' element={<Store />} />
+                {getStoreRoutes(pages)}
                 <Route path='cart' element={<Cart />} />
             </Route>
         </Routes>

@@ -1,0 +1,42 @@
+{
+    "categories": [
+        {
+            "to": "/Books",
+            "Name": "Books",
+            "order": 1,
+            "sub": [
+                {
+                    "to": "/Books/Comix",
+                    "Name": "Comix",
+                    "order": 1,
+                    "sub": []
+                },
+                {
+                    "to": "/Books/Manga",
+                    "Name": "Manga",
+                    "order": 2,
+                    "sub": []
+                },
+                {
+                    "to": "/Books/English",
+                    "Name": "English",
+                    "order": 3,
+                    "sub": [
+                        {
+                            "to": "/Books/English/Fantasy",
+                            "Name": "Fantasy",
+                            "order": 1,
+                            "sub": []
+                        },
+                        {
+                            "to": "/Books/English/Detective",
+                            "Name": "Detective",
+                            "order": 2,
+                            "sub": []
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

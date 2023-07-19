@@ -7,6 +7,7 @@ import { Subscription } from "rxjs";
 import { ordersService, productsService, usersService } from "../config/service-config";
 import OrderType from "../model/OrderType";
 import UserType from "../model/UserType";
+import { log } from "console";
 
 export function useDispatchCode() {
     const dispatch = useDispatch();
@@ -34,6 +35,8 @@ export function useSelectorProducts() {
     const [products, setProducts] = useState<ProductType[]>([]);
 
     useEffect(() => {
+        console.log('products effect');
+        
         const subscription: Subscription = productsService.getProducts()
             .subscribe({
                 next(productArray: ProductType[] | string) {
@@ -41,6 +44,8 @@ export function useSelectorProducts() {
                     if (typeof productArray === 'string') {
                         errorMessage = productArray;
                     } else {
+                        console.log('set products');
+                        
                         setProducts(productArray);
                     }
                     dispatch(errorMessage, '');
