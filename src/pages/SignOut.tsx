@@ -1,12 +1,19 @@
 import { useDispatch } from 'react-redux';
 import { authActions } from '../redux/slices/authSlice';
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 const SignOut: React.FC = () => {
+
+    const navigate = useNavigate()
     const dispatch = useDispatch();
-    return <button onClick={() => {
+
+    useEffect(() => {
         dispatch(authActions.reset())
-    }}>confirm sign out</button>
+        navigate('/')
+    }, [])
+
+    return <></>
 }
 
 export default SignOut;

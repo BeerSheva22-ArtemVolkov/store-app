@@ -1,4 +1,3 @@
-import { Typography } from "@mui/material"
 import OrdersTable from "../components/OrdersTable"
 
 const CastomerOrders: React.FC = () => {

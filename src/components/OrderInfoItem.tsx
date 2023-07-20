@@ -33,10 +33,7 @@ type OrderInfoItemType = {
 
 const OrderInfoItem: React.FC<OrderInfoItemType> = ({ order }) => {
 
-    // return <Box sx={{ flexGrow: 1 }}>
-    //     <DataGrid columns={columns} rows={order.cart} getRowId={(row: ProductType) => row.id} />
-    // </Box>
-    console.log(order);
+    const userData = useSelectorAuth();
 
     return <Box>
         <Grid container spacing={2} paddingRight={'1vw'} paddingLeft={'1vw'} >
@@ -116,7 +113,7 @@ const OrderInfoItem: React.FC<OrderInfoItemType> = ({ order }) => {
                                     size="small"
                                 />
                             </Grid>
-                            <Grid item>
+                            {userData && userData.role == 'admin' && <Grid item>
                                 <TextField
                                     InputProps={{
                                         startAdornment: (
@@ -132,8 +129,8 @@ const OrderInfoItem: React.FC<OrderInfoItemType> = ({ order }) => {
                                     value={order.userEmail}
                                     size="small"
                                 />
-                            </Grid>
-                            <Grid item>
+                            </Grid>}
+                            {userData && userData.role == 'admin' && <Grid item>
                                 <TextField
                                     InputProps={{
                                         startAdornment: (
@@ -149,7 +146,7 @@ const OrderInfoItem: React.FC<OrderInfoItemType> = ({ order }) => {
                                     value={order.updatedBy}
                                     size="small"
                                 />
-                            </Grid>
+                            </Grid>}
                             <Grid item>
                                 <TextField
                                     InputProps={{

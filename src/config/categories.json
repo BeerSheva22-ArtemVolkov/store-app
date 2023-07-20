@@ -1,0 +1,32 @@
+{
+    "name": "books",
+    "displayName": "Books",
+    "sub": [
+        {
+            "name": "manga",
+            "displayName": "Manga",
+            "sub": []
+        },
+        {
+            "name": "comix",
+            "displayName": "Comix",
+            "sub": []
+        },
+        {
+            "name": "english",
+            "displayName": "English",
+            "sub": [
+                {
+                    "name": "fantasy",
+                    "displayName": "Fantasy",
+                    "sub": []
+                },
+                {
+                    "name": "detective",
+                    "displayName": "Detective",
+                    "sub": []
+                }
+            ]
+        }
+    ]
+}

@@ -13,7 +13,7 @@ import RouteType from './model/RouteType';
 import routesConfig from './config/routes-config.json'
 import SignOut from './pages/SignOut';
 import AdminAccount from './pages/AdminAccount';
-import Store from './pages/Store';
+import Store from './pages/Catalog';
 import AddProduct from './components/ProductForm';
 import CustomerSettings from './pages/CustomerSettings';
 import { useSelectorAuth, useSelectorCode } from './redux/store';
@@ -27,12 +27,13 @@ import { authService } from './config/service-config';
 import { codeActions } from './redux/slices/codeSlice';
 import Products from './pages/Products';
 import TestPage from './pages/TestPage';
-import PagesType from './model/PagesType';
+import PageType from './model/PagesType';
 import pages from './config/store-pages';
+import Redirect from './pages/Redirect';
 
 const { always, authenticated, admin, noadmin, noauthenticated, development } = routesConfig;
 
-function getStoreRoutes(obj: PagesType) {
+function getStoreRoutes(obj: PageType) {
     return <Route path={obj.to}>
         <Route index element={obj.element} />
         {obj.sub.length && obj.sub.map(o => getStoreRoutes(o))}
@@ -113,9 +114,9 @@ const App: React.FC = () => {
                     <Route index element={<Products />} />
                     <Route path='' element={<CustomerOrders />} />
                 </Route>
-                {/* </Route> */}
                 {getStoreRoutes(pages)}
                 <Route path='cart' element={<Cart />} />
+                <Route path='redirect' element={<Redirect />} />
             </Route>
         </Routes>
         <Snackbar open={!!alertMessage} autoHideDuration={20000}

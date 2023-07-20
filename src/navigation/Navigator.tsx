@@ -8,7 +8,7 @@ import Badge from '@mui/material/Badge';
 import { useSelectorAuth, useSelectorCart } from "../redux/store";
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
-import PagesType from "../model/PagesType";
+import PageType from "../model/PagesType";
 import pages from "../config/store-pages";
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
@@ -38,7 +38,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     color: 'inherit',
     '& .MuiInputBase-input': {
         padding: theme.spacing(1, 1, 1, 0),
-        // vertical padding + font size from searchIcon
         paddingLeft: `calc(1em + ${theme.spacing(4)})`,
         transition: theme.transitions.create('width'),
         width: '20vw',
@@ -53,19 +52,23 @@ const Navigator: React.FC<{ routes: RouteType[] }> = ({ routes }) => {
     // const navigate = useNavigate();
     // const location = useLocation();
     // const [value, setValue] = useState(0);
+    const [drawerOpened, setDrawerOpened] = useState<boolean>(false)
+
+    const openDrawer = () => {
+        setDrawerOpened(true)
+    }
+
+    const closeDrawer = () => {
+        setDrawerOpened(false)
+    }
+
     const cart = useSelectorCart()
     const userData = useSelectorAuth();
-    const [catalogHistory, setCatalogHistory] = useState<PagesType[]>([])
+    const [catalogHistory, setCatalogHistory] = useState<PageType[]>([])
     const [catalog, setCatalog] = useState(getCatalog(pages))
 
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
-
-    const [drawerOpened, setDrawerOpened] = useState<boolean>(false)
-
-    const toggleDrawerOpened = () => {
-        setDrawerOpened(!drawerOpened)
-    }
 
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
@@ -133,7 +136,7 @@ const Navigator: React.FC<{ routes: RouteType[] }> = ({ routes }) => {
         return routes.filter(route => route.type == 'cart').map(r => <Tab component={NavLink} to={r.to} label={r.icon ? '' : r.label} key={r.label} icon={r.icon ? getIcon(r.icon) : undefined} />)
     }
 
-    function getCatalog(pages: PagesType) {
+    function getCatalog(pages: PageType) {
         return <>
             {
                 pages.sub.length ?
@@ -144,7 +147,9 @@ const Navigator: React.FC<{ routes: RouteType[] }> = ({ routes }) => {
                                 catalogHistory.pop()
                                 setCatalogHistory(catalogHistory)
                             }}>Назад</ListItemButton>}
-                        <ListItemButton><Tab component={NavLink} to={pages.to} label={`Показать все из ${pages.name}`} key={pages.name} /></ListItemButton>
+                        <ListItemButton onClick={() => closeDrawer()}>
+                            <Tab component={NavLink} to={pages.to} label={`Показать все из ${pages.name}`} key={pages.name} />
+                        </ListItemButton>
                         {pages.sub.map(subpage => {
                             return subpage.sub.length ?
                                 <ListItemButton onClick={() => {
@@ -159,7 +164,7 @@ const Navigator: React.FC<{ routes: RouteType[] }> = ({ routes }) => {
                                     </ListItemIcon>
                                 </ListItemButton>
                                 :
-                                <ListItemButton>
+                                <ListItemButton onClick={() => closeDrawer()}>
                                     <Tab component={NavLink} to={subpage.to} label={subpage.name} key={subpage.name} />
                                 </ListItemButton>
                         })}
@@ -196,7 +201,7 @@ const Navigator: React.FC<{ routes: RouteType[] }> = ({ routes }) => {
                 </Box>
             </Toolbar>
             <Toolbar>
-                {userData?.role != 'admin' && <Button variant="contained" startIcon={<MenuIcon />} color="secondary" onClick={toggleDrawerOpened}>
+                {userData?.role != 'admin' && <Button variant="contained" startIcon={<MenuIcon />} color="secondary" onClick={openDrawer}>
                     Catalog
                 </Button>}
                 <Search>
@@ -209,7 +214,7 @@ const Navigator: React.FC<{ routes: RouteType[] }> = ({ routes }) => {
                     />
                 </Search>
             </Toolbar>
-            <Drawer open={drawerOpened} onClose={toggleDrawerOpened} anchor="left" style={{ width: '100%' }}>
+            <Drawer open={drawerOpened} onClose={closeDrawer} anchor="left" style={{ width: '100%' }}>
                 <Box sx={{ width: '250px' }}>
                     <List>
                         {catalog}

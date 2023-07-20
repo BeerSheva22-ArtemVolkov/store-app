@@ -25,10 +25,13 @@ const SignIn: React.FC = () => {
                 usersService.addUser({ email: res.email, nickname: '', firstName: '', lastName: '', address: { city: '', street: '', flatNumber: 0, streetNumber: 0 } }, res.uid)
             }
             console.log(res);
-            
+
+            const status = res ? 'success' : 'error'
+            const message = status == "success" ? typeof res == 'string' ? res : 'Welcome back' : 'Incorrect Credentials'
+
             inputResult = {
-                status: res ? 'success' : 'error',
-                message: res ? 'Link send to your email' : 'Incorrect Credentials'
+                status: status,
+                message: message
             }
         } catch (error) {
             console.log(error);

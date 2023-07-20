@@ -1,17 +1,21 @@
 import { useTheme } from "@emotion/react"
-import { Box, Button, Container, CssBaseline, Divider, Grid, Slider, Switch, TextField, ThemeProvider, Typography } from "@mui/material"
+import { Box, Button, Container, CssBaseline, Divider, Grid, ListSubheader, MenuItem, Select, Slider, Switch, TextField, ThemeProvider, Typography } from "@mui/material"
 import { FormEvent, useEffect, useRef, useState } from "react"
 import { useDispatchCode } from "../hooks/hooks";
 import ProductType from "../model/ProductType";
+import { } from "../config/categories.json"
+import pages from "../config/store-pages";
+import PageType from "../model/PagesType";
 
-const formValuesInit = {
+const formValuesInit: ProductType = {
     name: '',
     price: 0,
     quantity: 0,
     image: '',
     description: '',
     rating: { count: 0, rate: 0 },
-    deliveryDays: 0
+    deliveryDays: 0,
+    categories: []
 }
 
 type productProps = {
@@ -19,10 +23,20 @@ type productProps = {
     submitFn(product: ProductType): Promise<ProductType>
 }
 
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+    PaperProps: {
+        style: {
+            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+            width: 250,
+        },
+    },
+};
+
 const AddProduct: React.FC<productProps> = ({ product, submitFn }) => {
 
     const theme = useTheme()
-
     const [formValues, setFormValues] = useState(formValuesInit)
     const dispatch = useDispatchCode();
     const [editMode, setEditMode] = useState<boolean>(false)
@@ -59,6 +73,13 @@ const AddProduct: React.FC<productProps> = ({ product, submitFn }) => {
         setFormValues({ ...formValues, description: event.target.value })
     }
 
+    const handlerCategories = (event: any) => {
+        console.log(event.target.value);
+        const catArr: string[] = event.target.value.split(",")
+        const trimmedArr = catArr.map(cat => cat.trim())
+        setFormValues({ ...formValues, categories: trimmedArr })
+    };
+
     const switchEditMode = () => {
         setEditMode(!editMode)
     }
@@ -80,7 +101,8 @@ const AddProduct: React.FC<productProps> = ({ product, submitFn }) => {
                 image: formValues.image,
                 description: formValues.description,
                 rating: { count: formValues.rating.count, rate: formValues.rating.rate },
-                deliveryDays: formValues.deliveryDays
+                deliveryDays: formValues.deliveryDays,
+                categories: formValues.categories
             })
         }
         catch (error: any) {
@@ -88,6 +110,20 @@ const AddProduct: React.FC<productProps> = ({ product, submitFn }) => {
         }
         dispatch(errorMessage, successMessage)
     }
+
+    const menus: JSX.Element[] = []
+
+    function getMenus(pages: PageType[], deep: number, parentValue?: string) {
+        pages.forEach(page => {
+            const value = parentValue ? `${parentValue}, ${page.categoryName}` : page.categoryName
+            menus.push(<MenuItem value={value} key={page.categoryName}>
+                {"-".repeat(deep) + page.categoryName}
+            </MenuItem>)
+            getMenus(page.sub, deep + 5, value)
+        })
+    }
+
+    getMenus([pages], 0)
 
     return (
         <ThemeProvider theme={theme}>
@@ -199,6 +235,17 @@ const AddProduct: React.FC<productProps> = ({ product, submitFn }) => {
                                     onChange={handlerDescription}
                                     InputProps={{ readOnly: !editMode }}
                                 />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Select
+                                    fullWidth
+                                    onChange={handlerCategories}
+                                    value={formValues.categories.join(', ')}
+                                    inputProps={{ readOnly: !editMode }}
+                                    MenuProps={MenuProps}
+                                >
+                                    {menus.map(menu => menu)}
+                                </Select>
                             </Grid>
                             {(editMode || !product) && <Grid item xs={12}>
                                 <Button

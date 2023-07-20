@@ -17,6 +17,7 @@ import StatusType from '../model/StatusType';
 import GoogleIcon from '@mui/icons-material/Google';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import { GoogleLoginButton, FacebookLoginButton } from 'react-social-login-buttons'
+import { useNavigate } from 'react-router-dom';
 // import { NetworkType } from '../../service/auth/AuthService';
 
 const SUBMIT_BUTTON_VALUE = 'Sign In'
@@ -44,11 +45,12 @@ type Props = {
 
 const SignInForm: React.FC<Props> = ({ submitFn }) => {
 
+    const navigate = useNavigate()
+
     const message = React.useRef<string>('');
     const [open, setOpen] = React.useState(false);
     const severity = React.useRef<StatusType>('success');
-
-    // const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    
     const handleSubmit = async (event: any) => {
         event.preventDefault();
 
@@ -70,9 +72,13 @@ const SignInForm: React.FC<Props> = ({ submitFn }) => {
         }
 
         const result = await submitFn({ email, password });
+        console.log(result);
         message.current = result.message!;
         severity.current = result.status;
         message.current && setOpen(true);
+        if (result.status == 'success'){
+            navigate('/')
+        }
     };
 
     return (

@@ -69,12 +69,24 @@ const sortType = [
     }
 ]
 
-const Store: React.FC = () => {
+type categories = {
+    inputCategories: string[]
+}
+
+const Store: React.FC<categories> = ({ inputCategories }) => {
+
+    console.log(inputCategories);
 
     const products: ProductType[] = useSelectorProducts();
-    console.log('products init', products);
+
+    console.log(products);
     
-    const [productsFiltered, setProductsFiltered] = useState<ProductType[]>(products)
+    const productsStart: ProductType[] = products.slice().filter(product => inputCategories.every(category => product.categories.includes(category)))
+    
+    console.log(productsStart);
+    
+    const [productsFiltered, setProductsFiltered] = useState<ProductType[]>(productsStart.slice())
+
     const [priceFiltered, setPriceFiltered] = useState<number[]>([MIN_PRICE, MAX_PRICE]);
     const [ratingFiltered, setRatingFiltered] = useState('none')
     const [deliveryFiltered, serDeliveryFiltered] = useState('none')
@@ -93,46 +105,41 @@ const Store: React.FC = () => {
     };
 
     const sortChange = (event: SelectChangeEvent) => {
-        console.log(event.target.value);
-        
         setSortingType(event.target.value as string);
     };
 
     useEffect(() => {
-        setProductsFiltered(products
+        let productsSort: ProductType[] = productsStart.slice()
+        console.log(productsSort);
+
+        switch (sortingType) {
+            case 'priceAscending':
+                productsSort.sort((p1, p2) => p1.price - p2.price)
+                break
+            case 'priceDescending':
+                productsSort.sort((p1, p2) => p2.price - p1.price)
+                break
+            case 'ratingAscending':
+                productsSort.sort((p1, p2) => p1.rating.rate - p2.rating.rate)
+                break
+            case 'ratingDescending':
+                productsSort.sort((p1, p2) => p2.rating.rate - p1.rating.rate)
+                break
+            default:
+                productsSort = productsStart.slice()
+        }
+        setProductsFiltered(productsSort
             .filter(product => product.price <= priceFiltered[1] && product.price >= priceFiltered[0])
             .filter(product => product.rating.rate >= ratingsArray.find(val => val.name == ratingFiltered)!.rating)
             .filter(product => product.deliveryDays <= deliveryArray.find(val => val.name == deliveryFiltered)!.deliveryDays)
         )
-    }, [products, priceFiltered, ratingFiltered, deliveryFiltered])
-
-    useEffect(() => {
-        console.log('sorting...');
-        
-        let productsSort: ProductType[] = []
-        switch (sortingType) {
-            case 'priceAscending':                
-                productsSort = productsFiltered.sort((p1, p2) => p2.price - p1.price)
-                break
-            case 'priceDescending':
-                productsSort = productsFiltered.sort((p1, p2) => p1.price - p2.price)
-                break
-            case 'ratingAscending':
-                productsSort = productsFiltered.sort((p1, p2) => p2.rating.rate - p1.rating.rate)
-                break
-            case 'ratingDescending':
-                productsSort = productsFiltered.sort((p1, p2) => p1.rating.rate - p2.rating.rate)
-                break
-            default:
-                productsSort = products
-        }        
-        setProductsFiltered(productsSort)
-    }, [sortingType])
+        return () => setProductsFiltered(productsStart.slice())
+    }, [products, priceFiltered, ratingFiltered, deliveryFiltered, sortingType, inputCategories])
 
     return (
         <>
-            <Grid container paddingRight={'5vw'} paddingLeft={'5vw'} spacing={1}>
-                <Grid xs={6} sm={3} lg={2}>
+            <Grid container paddingRight={'5%'} paddingLeft={'5%'} spacing={1} >
+                <Grid item xs={6} sm={3} lg={2}>
                     <Grid item xs={12}>
                         <Typography variant="h5">
                             Price
@@ -180,8 +187,8 @@ const Store: React.FC = () => {
                                 max={MAX_PRICE}
                             />
                         </Box>
+                        <Divider></Divider>
                     </Grid>
-                    <Divider></Divider>
                     <Grid item xs={12}>
                         <Box>
                             <Typography variant="h5">
@@ -216,8 +223,8 @@ const Store: React.FC = () => {
                                 </RadioGroup>
                             </Box>
                         </Box>
+                        <Divider></Divider>
                     </Grid>
-                    <Divider></Divider>
                     <Grid item xs={12}>
                         <Box>
                             <Typography variant="h5">
@@ -235,23 +242,25 @@ const Store: React.FC = () => {
                                 </RadioGroup>
                             </Box>
                         </Box>
+                        <Divider></Divider>
                     </Grid>
-                    <Divider></Divider>
                     {/* <Grid item xs={12}>
                         <Button variant="contained" disableElevation fullWidth>
                             Submit filters
                         </Button>
                     </Grid> */}
                 </Grid>
-                <Grid container xs={6} sm={9} lg={10} columnSpacing={1} justifyContent={'center'}>
-                    <FormControl sx={{ m: 1, width: 300 }}>
-                        <Select
-                            value={sortingType}
-                            onChange={sortChange}
-                        >
-                            {sortType.map(type => <MenuItem value={type.type}>{type.name}</MenuItem>)}
-                        </Select>
-                    </FormControl>
+                <Grid container item xs={6} sm={9} lg={10} >
+                    <Grid item xs={12} display={'flex'}>
+                        <FormControl sx={{ m: 1, width: 300, mx: 'auto' }} >
+                            <Select
+                                value={sortingType}
+                                onChange={sortChange}
+                            >
+                                {sortType.map(type => <MenuItem value={type.type}>{type.name}</MenuItem>)}
+                            </Select>
+                        </FormControl>
+                    </Grid>
                     <StoreTable products={productsFiltered} />
                 </Grid>
             </Grid>

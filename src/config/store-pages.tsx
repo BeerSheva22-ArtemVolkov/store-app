@@ -1,47 +1,82 @@
-import PagesType from "../model/PagesType"
-import Store from "../pages/Store"
-import TestPage from "../pages/TestPage"
+import PageType from "../model/PagesType"
+import Catalog from "../pages/Catalog"
 
-const pages: PagesType = {
-    to: '/Store',
+const pages: PageType = {
+    to: '/store',
     name: 'Store',
-    element: <Store />,
+    categoryName: 'store',
+    element: <Catalog inputCategories={[]} />,
     sub: [
         {
-            to: '/Store/Books',
+            to: '/store/books',
             name: 'Books',
-            element: <TestPage name={'Books'} />,
+            categoryName: 'books',
+            element: <Catalog inputCategories={['books']} />,
             sub: [
                 {
-                    to: "/Store/Books/Comix",
+                    to: "/store/books/comix",
                     name: "Comix",
-                    element: <TestPage name={'Comix'} />,
+                    categoryName: 'comix',
+                    element: <Catalog inputCategories={['books', 'comix']} />,
                     sub: []
                 },
                 {
-                    to: "/Store/Books/Manga",
+                    to: "/store/books/manga",
                     name: "Manga",
-                    element: <TestPage name={'Manga'} />,
+                    categoryName: 'manga',
+                    element: <Catalog inputCategories={['books', 'manga']} />,
                     sub: []
                 },
                 {
-                    to: "/Store/Books/English",
+                    to: "/store/books/english",
                     name: "English",
-                    element: <TestPage name={'English'} />,
+                    categoryName: 'english',
+                    element: <Catalog inputCategories={['books', 'english']} />,
                     sub: [
                         {
-                            to: "/Store/Books/English/Fantasy",
+                            to: "/store/books/english/fantasy",
                             name: "Fantasy",
-                            element: <TestPage name={'Fantasy'} />,
+                            categoryName: 'fantasy',
+                            element: <Catalog inputCategories={['books', 'english', 'fantasy']} />,
                             sub: []
                         },
                         {
-                            to: "/Store/Books/English/Detective",
+                            to: "/store/books/english/detective",
                             name: "Detective",
-                            element: <TestPage name={'Detective'} />,
+                            categoryName: 'detective',
+                            element: <Catalog inputCategories={['books', 'english', 'detective']} />,
                             sub: []
                         }
                     ]
+                }
+            ]
+        },
+        {
+            to: '/store/games',
+            name: 'Games',
+            categoryName: 'games',
+            element: <Catalog inputCategories={['games']} />,
+            sub: [
+                {
+                    to: "/store/games/PS5",
+                    name: "PS5",
+                    categoryName: 'ps5',
+                    element: <Catalog inputCategories={['games', 'ps5']} />,
+                    sub: []
+                },
+                {
+                    to: "/store/games/PS4",
+                    name: "PS4",
+                    categoryName: 'ps4',
+                    element: <Catalog inputCategories={['games', 'ps4']} />,
+                    sub: []
+                },
+                {
+                    to: "/store/games/PC",
+                    name: "PC",
+                    categoryName: 'pc',
+                    element: <Catalog inputCategories={['games', 'pc']} />,
+                    sub: []
                 }
             ]
         }

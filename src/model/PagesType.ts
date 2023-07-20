@@ -1,8 +1,9 @@
-type PagesType = {
+type PageType = {
     to: string
     name: string
     element: React.ReactNode
-    sub: PagesType[]
+    sub: PageType[]
+    categoryName: string
 }
 
-export default PagesType
+export default PageType

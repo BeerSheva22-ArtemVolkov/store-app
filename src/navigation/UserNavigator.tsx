@@ -9,7 +9,7 @@ import { useSelector } from "react-redux";
 import { useSelectorCart } from "../redux/store";
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
-import PagesType from "../model/PagesType";
+import PageType from "../model/PagesType";
 import pages from "../config/store-pages";
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
@@ -69,7 +69,7 @@ const UserNavigator: React.FC<{ routes: RouteType[] }> = ({ routes }) => {
     const [value, setValue] = useState(0);
     const cart = useSelectorCart()
 
-    const [catalogHistory, setCatalogHistory] = useState<PagesType[]>([])
+    const [catalogHistory, setCatalogHistory] = useState<PageType[]>([])
     const [catalog, setCatalog] = useState(getCatalog(pages))
 
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -143,7 +143,7 @@ const UserNavigator: React.FC<{ routes: RouteType[] }> = ({ routes }) => {
         return routes.filter(route => route.type == 'cart').map(r => <Tab component={NavLink} to={r.to} label={r.icon ? '' : r.label} key={r.label} icon={r.icon ? getIcon(r.icon) : undefined} />)
     }
 
-    function getCatalog(pages: PagesType) {
+    function getCatalog(pages: PageType) {
         // return routes.filter(route => route.type == 'store').map(r => <ListItemButton><Tab component={NavLink} to={r.to} label={r.icon ? '' : r.label} key={r.label} icon={r.icon ? getIcon(r.icon) : undefined} /></ListItemButton>)
         return <>
             {

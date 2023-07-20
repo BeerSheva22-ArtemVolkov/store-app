@@ -10,6 +10,7 @@ type ProductType = {
         rate: number
         count: number
     }
+    categories: string[]
 }
 
 export default ProductType

@@ -2,7 +2,7 @@ import UserCredentialsDataType from "../../model/UserCredentialsDataType";
 import UserDataType from "../../model/UserDataType";
 import AuthService from "./AuthService";
 import { getFirestore, collection, getDoc, doc } from "firebase/firestore"
-import { GoogleAuthProvider, UserCredential, getAuth, sendSignInLinkToEmail, signInWithEmailAndPassword, signInWithEmailLink, signInWithPopup, signOut, createUserWithEmailAndPassword, FacebookAuthProvider } from "firebase/auth"
+import { GoogleAuthProvider, UserCredential, getAuth, sendSignInLinkToEmail, signInWithEmailAndPassword, signInWithEmailLink, signInWithPopup, signOut, createUserWithEmailAndPassword, FacebookAuthProvider, sendEmailVerification } from "firebase/auth"
 import appFirebase from "../../config/firebase-config";
 
 export default class AuthServiceFire implements AuthService {
@@ -24,28 +24,11 @@ export default class AuthServiceFire implements AuthService {
                     break;
                 default:
                     if (!loginData.password) {
-                        console.log('link', loginData.email);
-
                         sendSignInLinkToEmail(this.auth, loginData.email, {
-                            url: 'http://localhost:3000/account',
+                            url: `http://localhost:3000/redirect?email=${loginData.email}`,
                             handleCodeInApp: true,
-
                         })
-                        
-                            .then(() => {
-                                // The link was successfully sent. Inform the user.
-                                // Save the email locally so you don't need to ask the user for it again
-                                // if they open the link on the same device.
-                                // ...
-                            })
-                            .catch((error) => {
-                                console.log(error);
-
-                                const errorCode = error.code;
-                                const errorMessage = error.message;
-                                // ...
-                            });
-                        userData = 'Link send to your email'
+                        userData = 'Link sent to your email'
                     } else {
                         userAuth = await signInWithEmailAndPassword(this.auth, loginData.email, loginData.password)
                     }
@@ -53,7 +36,6 @@ export default class AuthServiceFire implements AuthService {
             console.log(userAuth);
             if (userAuth) {
                 userData = { email: userAuth.user.email as string, role: await this.isAdmin(userAuth.user.uid) ? "admin" : "user", uid: userAuth.user.uid }
-                console.log(userData);
             }
 
         } catch (error: any) {
@@ -81,8 +63,9 @@ export default class AuthServiceFire implements AuthService {
         try {
             let userAuth: UserCredential
 
+            // sendEmailVerification()
             userAuth = await createUserWithEmailAndPassword(this.auth, loginData.email, loginData.password)
-            // userAuth.user.sendEmailVerification();
+
             console.log(userAuth);
 
             userData = { email: userAuth.user.email as string, role: "user", uid: userAuth.user.uid }
@@ -101,9 +84,11 @@ export default class AuthServiceFire implements AuthService {
         return res
     }
 
-    // getAvailableProviders(): NetworkType[] {
-    //     throw new Error("Method not implemented.");
-    // }
+    async loginByLink(email: string, link: string): Promise<string | UserDataType> {
+        const userAuth = await signInWithEmailLink(this.auth, email, link)
+        const userData: UserDataType = { email: userAuth.user.email as string, role: await this.isAdmin(userAuth.user.uid) ? "admin" : "user", uid: userAuth.user.uid }
+        return userData
+    }
 
     private async isAdmin(uid: any): Promise<boolean> {
         const docRef = doc(this.administratorsCollection, uid)
