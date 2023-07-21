@@ -11,7 +11,6 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import UserCredentialsDataType from '../model/UserCredentialsDataType';
-import InputResultType from '../model/InputResultType';
 import { Alert, Divider, Snackbar } from '@mui/material';
 import StatusType from '../model/StatusType';
 import GoogleIcon from '@mui/icons-material/Google';
@@ -40,17 +39,11 @@ function Copyright(props: any) {
 const defaultTheme = createTheme();
 
 type Props = {
-    submitFn: (loginData: UserCredentialsDataType) => Promise<InputResultType>
+    submitFn: (loginData: UserCredentialsDataType) => Promise<void>
 }
 
 const SignInForm: React.FC<Props> = ({ submitFn }) => {
 
-    const navigate = useNavigate()
-
-    const message = React.useRef<string>('');
-    const [open, setOpen] = React.useState(false);
-    const severity = React.useRef<StatusType>('success');
-    
     const handleSubmit = async (event: any) => {
         event.preventDefault();
 
@@ -71,14 +64,7 @@ const SignInForm: React.FC<Props> = ({ submitFn }) => {
                 break
         }
 
-        const result = await submitFn({ email, password });
-        console.log(result);
-        message.current = result.message!;
-        severity.current = result.status;
-        message.current && setOpen(true);
-        if (result.status == 'success'){
-            navigate('/')
-        }
+        await submitFn({ email, password });
     };
 
     return (
@@ -135,7 +121,9 @@ const SignInForm: React.FC<Props> = ({ submitFn }) => {
                                     Sign In
                                 </Button>
                             </Grid>
-                            <Divider sx={{ width: '100%', fontWeight: 'bold' }}>or</Divider>
+                            <Grid item xs={12} sm={12} md={12}>
+                                <Divider sx={{ width: '100%', fontWeight: 'bold' }}>or</Divider>
+                            </Grid>
                             <Grid item xs={12} sm={12} md={12}>
                                 <Button
                                     type="submit"
@@ -160,12 +148,6 @@ const SignInForm: React.FC<Props> = ({ submitFn }) => {
                             </Grid>
                         </Grid>
                     </Box>
-                    <Snackbar open={open} autoHideDuration={10000}
-                        onClose={() => setOpen(false)}>
-                        <Alert onClose={() => setOpen(false)} severity={severity.current} sx={{ width: '100%' }}>
-                            {message.current}
-                        </Alert>
-                    </Snackbar>
                 </Box>
                 <Copyright sx={{ mt: 4, mb: 4 }} />
             </Container>

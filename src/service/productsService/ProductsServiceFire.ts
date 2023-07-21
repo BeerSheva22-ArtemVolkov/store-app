@@ -3,8 +3,9 @@ import ProductType from "../../model/ProductType";
 import ProductsService from "./ProductsService";
 import { CollectionReference, DocumentReference, FirestoreError, collection, deleteDoc, doc, getDoc, getFirestore, setDoc } from "firebase/firestore";
 import { collectionData } from 'rxfire/firestore'
-import appFirebase from "../../config/firebase-config";
+import { appFirebase, storageFirebase } from "../../config/firebase-config";
 import { getRandomInt } from "../../util/random";
+import { StorageReference, UploadResult, deleteObject, getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 const MIN_ID = 100000
 const MAX_ID = 1000000
@@ -24,8 +25,13 @@ export default class ProductsServiceFire implements ProductsService {
 
     collectionRef: CollectionReference = collection(getFirestore(appFirebase), 'products')
 
-    async addProduct(product: ProductType): Promise<ProductType> {
+    async addProduct(product: ProductType, image: File | undefined): Promise<ProductType> {
         const id: string = await this.getId()
+        if (image) {
+            const [url, imageRef] = await this.uploadImage(image)
+            product.image.storageRef = imageRef
+            product.image.url = url
+        }
         const docRef: DocumentReference = this.getDocRef(id)
         try {
             await setDoc(docRef, { ...product, id })
@@ -45,10 +51,15 @@ export default class ProductsServiceFire implements ProductsService {
         })) as Observable<string | ProductType[]>
     }
 
-    async updateProduct(product: ProductType): Promise<ProductType> {
+    async updateProduct(product: ProductType, image: File | undefined): Promise<ProductType> {
         const id: string = product.id
         console.log(id);
-
+        if (image) {
+            await this.deleteImage(product.image.storageRef)
+            const [url, imageRef] = await this.uploadImage(image)
+            product.image.storageRef = imageRef
+            product.image.url = url
+        }
         const docRef: DocumentReference = this.getDocRef(id)
         try {
             await setDoc(docRef, { ...product, id })
@@ -93,4 +104,17 @@ export default class ProductsServiceFire implements ProductsService {
         return id
     }
 
+    private async uploadImage(imageUpload: File) {
+        const imageRef: StorageReference = ref(storageFirebase, `images/${imageUpload.name}`);
+        const snapshot: UploadResult = await uploadBytes(imageRef, imageUpload)
+        const url: string = await getDownloadURL(snapshot.ref)
+        return [url, imageRef.fullPath.toString()]
+    }
+
+    private async deleteImage(storageRef: string) {
+        const imageRef: StorageReference = ref(storageFirebase, storageRef);
+        if (imageRef) {
+            deleteObject(imageRef).then(() => console.log('success delete')).catch((error) => console.log('delete error: ' + error.message))
+        }
+    }
 }

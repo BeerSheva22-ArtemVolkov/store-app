@@ -1,3 +1,5 @@
+import { DocumentReference } from "firebase/firestore"
+
 type ProductType = {
     id?: any
     deliveryDays: number
@@ -5,7 +7,10 @@ type ProductType = {
     price: number
     quantity: number
     description: string
-    image: string
+    image: {
+        url: string
+        storageRef: string
+    }
     rating: {
         rate: number
         count: number

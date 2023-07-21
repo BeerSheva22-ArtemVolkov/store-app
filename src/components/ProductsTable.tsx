@@ -44,8 +44,8 @@ const ProductsTable: React.FC<productsTableprops> = ({ openEdit, openDelete }) =
 
     const mdColumns: GridColDef[] = [
         {
-            field: 'image', headerName: 'Image path', flex: 0.2, headerClassName: 'data-grid-header',
-            align: 'left', headerAlign: 'left'
+            field: 'image', headerName: 'Image', flex: 0.2, headerClassName: 'data-grid-header',
+            align: 'center', headerAlign: 'left', renderCell: (params) => <img src={params.value.url} height='50px'></img>
         }
     ]
 

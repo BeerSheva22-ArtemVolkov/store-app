@@ -43,7 +43,6 @@ function getStoreRoutes(obj: PageType) {
 function getRoutes(userData: UserDataType): RouteType[] {
     const res: RouteType[] = [];
     res.push(...always);
-    console.log(userData);
 
     if (userData) {
         res.push(...authenticated);
@@ -81,6 +80,7 @@ const App: React.FC = () => {
 
     function codeProcessing(): [string, StatusType] {
         const res: [string, StatusType] = [code.message, 'success'];
+        console.log(code);
 
         switch (code.code) {
             case CodeType.OK: res[1] = 'success'; break;
@@ -105,22 +105,15 @@ const App: React.FC = () => {
                     <Route path='registration' element={<Registration />} />
                     <Route path='signout' element={<SignOut />} />
                 </Route>
-                {/* <Route path='/admin' element={<AdminAccount />} > */}
                 <Route path='orders' element={<SellerOrders />} />
-                <Route path='test' element={<TestPage name={'test'} />} />
                 <Route path='adminorders' element={<SellerOrders />} />
-                {/* <Route path='addproduct' element={<AddProduct />} /> */}
-                <Route path='/products' >
-                    <Route index element={<Products />} />
-                    <Route path='' element={<CustomerOrders />} />
-                </Route>
-                {getStoreRoutes(pages)}
+                <Route path='/products' element={<Products />} />
                 <Route path='cart' element={<Cart />} />
                 <Route path='redirect' element={<Redirect />} />
+                {getStoreRoutes(pages)}
             </Route>
         </Routes>
-        <Snackbar open={!!alertMessage} autoHideDuration={20000}
-            onClose={() => dispatch(codeActions.reset())}>
+        <Snackbar open={!!alertMessage} autoHideDuration={5000} onClose={() => dispatch(codeActions.reset())}>
             <Alert onClose={() => dispatch(codeActions.reset())} severity={severity} sx={{ width: '100%' }}>
                 {alertMessage}
             </Alert>

@@ -3,7 +3,7 @@ import OrderType from "../../model/OrderType";
 import ProductType from "../../model/ProductType";
 import OrdersService from "./OrdersService";
 import { CollectionReference, DocumentReference, FirestoreError, collection, doc, getDoc, getFirestore, setDoc } from "firebase/firestore";
-import appFirebase from "../../config/firebase-config";
+import { appFirebase } from "../../config/firebase-config";
 import { collectionData } from "rxfire/firestore";
 import { getRandomInt } from "../../util/random";
 import { getISODateStr } from "../../util/date-functions";

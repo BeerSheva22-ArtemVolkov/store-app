@@ -21,11 +21,11 @@ const Cart: React.FC = () => {
     const [currentUser, setCurrentuser] = useState<UserType | undefined>(users.find(user => user.email == userData?.email))
     const [submitDialog, setSubmitDialog] = useState<boolean>(false)
 
-    const closeSubmitDialog = () =>{
+    const closeSubmitDialog = () => {
         setSubmitDialog(false)
     }
 
-    const openSubmitDialog = () =>{
+    const openSubmitDialog = () => {
         setSubmitDialog(true)
     }
 
@@ -73,7 +73,7 @@ const Cart: React.FC = () => {
                 <Grid item xs={4}>
                     {userData ?
                         <Box>
-                            {!checkAddress() && <Alert severity="error" icon={false}>Вы не заполнили данные о доставке</Alert>}
+                            {!checkAddress() && <Alert severity="error" icon={false}>You didn't fill in the shipping information</Alert>}
                             < Button
                                 fullWidth
                                 color="primary"
@@ -81,11 +81,11 @@ const Cart: React.FC = () => {
                                 size="large"
                                 variant="outlined"
                                 onClick={openSubmitDialog}
-                            >Оформить заказ</Button>
+                            >Create order</Button>
                         </Box>
                         :
                         <Box>
-                            <Alert severity="error" icon={false}>Вы не авторизованы</Alert>
+                            <Alert severity="error" icon={false}>Yuo are not authorized</Alert>
 
 
                             <Button
@@ -94,7 +94,7 @@ const Cart: React.FC = () => {
                                 size="large"
                                 variant="outlined"
                                 onClick={() => navigate(routesConfig.noauthenticated.find(route => route.label == 'Registration')!.to)}
-                            >Зарегистрируйтесь</Button>
+                            >Sign up</Button>
                             <Divider sx={{ width: '100%', fontWeight: 'bold' }}>Или</Divider>
                             <Button
                                 fullWidth
@@ -102,11 +102,11 @@ const Cart: React.FC = () => {
                                 size="large"
                                 variant="outlined"
                                 onClick={() => navigate(routesConfig.noauthenticated.find(route => route.label == 'Sign In')!.to)}
-                            >Войдите в аккаунт</Button>
+                            >Sign in</Button>
                         </Box>}
                     <Box>
                         <Typography component="h1" variant="h5">
-                            Итого:
+                            For pay:
                         </Typography>
                         <Typography component="h1" variant="h4">
                             {cart.reduce((sum, cartItem) => cartItem.price * cartItem.quantity + sum, 0)}₪

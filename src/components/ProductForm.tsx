@@ -1,9 +1,7 @@
 import { useTheme } from "@emotion/react"
-import { Box, Button, Container, CssBaseline, Divider, Grid, ListSubheader, MenuItem, Select, Slider, Switch, TextField, ThemeProvider, Typography } from "@mui/material"
-import { FormEvent, useEffect, useRef, useState } from "react"
-import { useDispatchCode } from "../hooks/hooks";
+import { Box, Button, Container, CssBaseline, Divider, Grid, MenuItem, Select, Switch, TextField, ThemeProvider } from "@mui/material"
+import { FormEvent, useEffect, useState } from "react"
 import ProductType from "../model/ProductType";
-import { } from "../config/categories.json"
 import pages from "../config/store-pages";
 import PageType from "../model/PagesType";
 
@@ -11,7 +9,7 @@ const formValuesInit: ProductType = {
     name: '',
     price: 0,
     quantity: 0,
-    image: '',
+    image: { storageRef: '', url: '' },
     description: '',
     rating: { count: 0, rate: 0 },
     deliveryDays: 0,
@@ -20,7 +18,7 @@ const formValuesInit: ProductType = {
 
 type productProps = {
     product?: ProductType
-    submitFn(product: ProductType): Promise<ProductType>
+    submitFn(product: ProductType, image: File | undefined): Promise<void>
 }
 
 const ITEM_HEIGHT = 48;
@@ -37,9 +35,11 @@ const MenuProps = {
 const AddProduct: React.FC<productProps> = ({ product, submitFn }) => {
 
     const theme = useTheme()
+
+    const [imageUpload, setImageUpload] = useState<File | undefined>();
+    const [previewImageURL, setPreviewImageURL] = useState<string>('')
     const [formValues, setFormValues] = useState(formValuesInit)
-    const dispatch = useDispatchCode();
-    const [editMode, setEditMode] = useState<boolean>(false)
+    const [editMode, setEditMode] = useState<boolean>(true)
 
     useEffect(() => {
         setFormValues(product || formValuesInit)
@@ -65,10 +65,6 @@ const AddProduct: React.FC<productProps> = ({ product, submitFn }) => {
         setFormValues({ ...formValues, deliveryDays: event.target.value })
     }
 
-    const handlerImage = (event: any) => {
-        setFormValues({ ...formValues, image: event.target.value })
-    }
-
     const handlerDescription = (event: any) => {
         setFormValues({ ...formValues, description: event.target.value })
     }
@@ -84,31 +80,29 @@ const AddProduct: React.FC<productProps> = ({ product, submitFn }) => {
         setEditMode(!editMode)
     }
 
-    async function onReset(event: FormEvent) {
+    function onReset(event: FormEvent) {
         setFormValues(product || formValuesInit)
+        setPreviewImageURL('')
     }
 
     async function onSubmit(event: any) {
         event.preventDefault();
-        let errorMessage = '';
-        const successMessage = 'Product added'
-        try {
-            await submitFn({
-                id: product?.id,
-                name: formValues.name,
-                price: formValues.price,
-                quantity: formValues.quantity,
-                image: formValues.image,
-                description: formValues.description,
-                rating: { count: formValues.rating.count, rate: formValues.rating.rate },
-                deliveryDays: formValues.deliveryDays,
-                categories: formValues.categories
-            })
-        }
-        catch (error: any) {
-            errorMessage = error
-        }
-        dispatch(errorMessage, successMessage)
+        await submitFn({
+            id: product?.id,
+            name: formValues.name,
+            price: formValues.price,
+            quantity: formValues.quantity,
+            image: {
+                storageRef: formValues.image.storageRef,
+                url: formValues.image.url
+            },
+            description: formValues.description,
+            rating: { count: formValues.rating.count, rate: formValues.rating.rate },
+            deliveryDays: formValues.deliveryDays,
+            categories: formValues.categories
+        },
+            imageUpload)
+
     }
 
     const menus: JSX.Element[] = []
@@ -211,17 +205,35 @@ const AddProduct: React.FC<productProps> = ({ product, submitFn }) => {
                                     }}
                                 />
                             </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    required
-                                    fullWidth
-                                    name="image"
-                                    label="Image"
-                                    id="image"
-                                    value={formValues.image}
-                                    onChange={handlerImage}
-                                    InputProps={{ readOnly: !editMode }}
-                                />
+                            <Grid item xs={6}>
+                                <Box>
+                                    <label htmlFor="btn-upload" style={{ width: '100%' }}>
+                                        <input
+                                            id="btn-upload"
+                                            name="btn-upload"
+                                            style={{ display: 'none' }}
+                                            type="file"
+                                            onChange={(event) => {
+                                                setImageUpload(event.target.files![0])
+                                                setPreviewImageURL(URL.createObjectURL(event.target.files![0]));
+                                            }}
+                                        />
+                                        <Button
+                                            style={{ width: '100%' }}
+                                            className="btn-choose"
+                                            variant="outlined"
+                                            component="span"
+                                            disabled={!editMode}
+                                        >
+                                            Choose Image
+                                        </Button>
+                                    </label>
+                                </Box>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <Box>
+                                    <img src={previewImageURL || formValues.image.url} style={{ maxHeight: '100%', maxWidth: '100%' }} />
+                                </Box>
                             </Grid>
                             <Grid item xs={12}>
                                 <TextField

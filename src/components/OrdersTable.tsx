@@ -1,6 +1,6 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, MenuItem, Modal, Select, Typography, useMediaQuery, useTheme } from "@mui/material"
 import OrderType from "../model/OrderType";
-import { useSelectorOrders } from "../hooks/hooks";
+import { useDispatchCode, useSelectorOrders } from "../hooks/hooks";
 import { DataGrid, GridActionsCellItem, GridColDef } from "@mui/x-data-grid";
 import { useEffect, useMemo, useState } from "react";
 import { Delete } from "@mui/icons-material";
@@ -15,22 +15,12 @@ import { useSelectorAuth } from "../redux/store";
 import StatusType from "../model/StatusType";
 import OrderStatusType, { OrderStatusTypeArray } from "../model/OrderStatusType";
 
-const style = {
-    position: 'absolute' as 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 400,
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
-    p: 4,
-};
-
 const OrdersTable: React.FC = () => {
 
     const userData = useSelectorAuth();
     const theme = useTheme();
+    const dispatchCode = useDispatchCode()
+
     const isSM = useMediaQuery(theme.breakpoints.down('sm'));
     const isMD = useMediaQuery(theme.breakpoints.down('md'));
     const isLG = useMediaQuery(theme.breakpoints.down('lg'));
@@ -139,11 +129,25 @@ const OrdersTable: React.FC = () => {
         setUpdateOpened(false);
     };
 
-    const actualUpdating = () => {
+    function actualUpdating() {
+
+        console.log('updating');
+        
+        const successMessage: string = status == "Deleted" ? 'Order deleted' : 'Order updated'
+        let errorMessage: string = ''
+
         const order: OrderType = orders.find(item => item.id == orderID)!
-        ordersService.updateOrder({ ...order, status, dateEnd: getISODateStr(new Date()), updatedBy: userData?.email })
+        try {
+            ordersService.updateOrder({ ...order, status, dateEnd: getISODateStr(new Date()), updatedBy: userData?.email })
+        } catch (error: any) {
+            errorMessage = error.message
+        }
+        console.log(successMessage, errorMessage);
         closeUpdateDialog()
         closeDeleteDialog()
+        dispatchCode(successMessage, errorMessage)
+
+
     }
 
     const statusHandler = (event: any) => {
@@ -157,7 +161,6 @@ const OrdersTable: React.FC = () => {
             </Box>
 
             <Dialog open={infoOpened} onClose={() => setInfoOpened(false)} fullWidth maxWidth={"xl"}>
-                {/* <Box sx={style}> */}
                 <Box>
                     <OrderInfoItem order={order!} />
                 </Box>

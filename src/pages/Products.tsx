@@ -12,7 +12,10 @@ import { productsService } from "../config/service-config";
 const Products: React.FC = () => {
 
     const products: ProductType[] = useSelectorProducts();
-    const dispatch = useDispatchCode();
+
+    console.log(products);
+
+    const dispatchCode = useDispatchCode();
 
     const [productChangeDialog, setProductChangeDialog] = useState<boolean>(false)
     const [productDeleteDialog, setProductDeleteDialog] = useState<boolean>(false)
@@ -48,25 +51,47 @@ const Products: React.FC = () => {
         setProduct(selectedProduct)
     }
 
-    async function updateFn(product: ProductType) {
-        const res = productsService.updateProduct(product)
-        productChangeClose()
-        return res
+    async function updateFn(product: ProductType, image: File | undefined) {
+        let errorMessage = '';
+        const successMessage = 'Product was edited'
+        try {
+            const res = productsService.updateProduct(product, image)
+            productChangeClose()
+        } catch (error: any) {
+            errorMessage = error.message
+        }
+        dispatchCode(successMessage, errorMessage)
     }
 
-    async function addFn(product: ProductType) {
-        const res = productsService.addProduct(product)
-        productChangeClose()
-        return res
+    async function addFn(product: ProductType, image: File | undefined) {
+        let errorMessage = '';
+        const successMessage = 'Product was added'
+        try {
+            const res = productsService.addProduct(product, image)
+            productChangeClose()
+        } catch (error: any) {
+            errorMessage = error.message
+        }
+        
+        dispatchCode(successMessage, errorMessage)
     }
 
     async function deleteFn() {
-        productsService.deleteProduct(product!.id)
-        productDeleteClose()
+        let errorMessage = '';
+        const successMessage = 'Product was deleted'
+        try {
+            productsService.deleteProduct(product!.id)
+            productDeleteClose()
+        } catch (error: any) {
+            errorMessage = error.message
+        }
+        console.log(successMessage, errorMessage);
+        //TODO
+        dispatchCode(successMessage, errorMessage)
     }
 
     return <Box>
-        
+
         <ProductsTable openEdit={openEdit} openDelete={openDelete}></ProductsTable>
 
         <Dialog

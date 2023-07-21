@@ -3,7 +3,7 @@ import UserType from "../../model/UserType";
 import UsersService from "./UsersService";
 import { collectionData } from "rxfire/firestore";
 import { CollectionReference, DocumentReference, FirestoreError, collection, doc, getDoc, getFirestore, setDoc } from "firebase/firestore";
-import appFirebase from "../../config/firebase-config";
+import { appFirebase } from "../../config/firebase-config";
 
 function getErrorMessage(firestoreError: FirestoreError): string {
     let errorMessage = ''

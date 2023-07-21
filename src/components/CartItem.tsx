@@ -66,7 +66,7 @@ const CartItem: React.FC<CartItemProps> = ({ cartItem }) => {
     return <Card sx={{ maxWidth: '100%', boxShadow: 'lg', }} >
         <Grid container spacing={1}>
             <Grid xs={4}>
-                <CardMedia component='img' image={cartItem.image} sx={{ height: '100%', width: '100%' }} />
+                <CardMedia component='img' image={cartItem.image.url} sx={{ height: '100%', width: '100%' }} />
             </Grid>
             <Grid xs={8}>
                 <CardContent>

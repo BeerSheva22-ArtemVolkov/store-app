@@ -7,36 +7,37 @@ import { Subscription } from "rxjs";
 import { ordersService, productsService, usersService } from "../config/service-config";
 import OrderType from "../model/OrderType";
 import UserType from "../model/UserType";
-import { log } from "console";
 
 export function useDispatchCode() {
+
     const dispatch = useDispatch();
-    return (error: string, successMessage: string) => {
+
+    return (successMessage: string, errorMessage: string) => {
         let code: CodeType = CodeType.OK;
         let message: string = '';
-        console.log(error, successMessage);
-        
-        if (error) {
-            if (error.includes('Authentication')) {
+        console.log(errorMessage, successMessage);
+
+        if (errorMessage) {
+            if (errorMessage.includes('Authentication')) {
                 code = CodeType.AUTH_ERROR;
                 message = "Authentication error, mooving to Sign In";
             } else {
-                code = error.includes('unavailable') ? CodeType.SERVER_ERROR : CodeType.UNKNOWN;
-                message = error;
+                code = errorMessage.includes('unavailable') ? CodeType.SERVER_ERROR : CodeType.UNKNOWN;
+                message = errorMessage;
             }
         }
-        
+
         dispatch(codeActions.set({ code, message: message || successMessage }))
     }
 }
 
 export function useSelectorProducts() {
+
     const dispatch = useDispatchCode();
     const [products, setProducts] = useState<ProductType[]>([]);
 
     useEffect(() => {
-        console.log('products effect');
-        
+
         const subscription: Subscription = productsService.getProducts()
             .subscribe({
                 next(productArray: ProductType[] | string) {
@@ -44,11 +45,11 @@ export function useSelectorProducts() {
                     if (typeof productArray === 'string') {
                         errorMessage = productArray;
                     } else {
-                        console.log('set products');
-                        
                         setProducts(productArray);
                     }
-                    dispatch(errorMessage, '');
+                    if (errorMessage) {
+                        dispatch(errorMessage, '');
+                    }
                 }
             });
         return () => subscription.unsubscribe();
@@ -57,6 +58,7 @@ export function useSelectorProducts() {
 }
 
 export function useSelectorOrders() {
+
     const dispatch = useDispatchCode();
     const [orders, setOrders] = useState<OrderType[]>([]);
 
@@ -70,7 +72,9 @@ export function useSelectorOrders() {
                     } else {
                         setOrders(productArray);
                     }
-                    dispatch(errorMessage, '');
+                    if (errorMessage) {
+                        dispatch(errorMessage, '');
+                    }
                 }
             });
         return () => subscription.unsubscribe();
@@ -79,6 +83,7 @@ export function useSelectorOrders() {
 }
 
 export function useSelectorUsers() {
+    
     const dispatch = useDispatchCode();
     const [users, setUsers] = useState<UserType[]>([]);
 
@@ -92,7 +97,9 @@ export function useSelectorUsers() {
                     } else {
                         setUsers(usersArray);
                     }
-                    dispatch(errorMessage, '');
+                    if (errorMessage) {
+                        dispatch(errorMessage, '');
+                    }
                 }
             });
         return () => subscription.unsubscribe();

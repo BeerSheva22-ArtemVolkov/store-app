@@ -3,7 +3,7 @@ import UserDataType from "../../model/UserDataType";
 import AuthService from "./AuthService";
 import { getFirestore, collection, getDoc, doc } from "firebase/firestore"
 import { GoogleAuthProvider, UserCredential, getAuth, sendSignInLinkToEmail, signInWithEmailAndPassword, signInWithEmailLink, signInWithPopup, signOut, createUserWithEmailAndPassword, FacebookAuthProvider, sendEmailVerification } from "firebase/auth"
-import appFirebase from "../../config/firebase-config";
+import { appFirebase } from "../../config/firebase-config";
 
 export default class AuthServiceFire implements AuthService {
 
@@ -11,7 +11,7 @@ export default class AuthServiceFire implements AuthService {
     private administratorsCollection = collection(getFirestore(appFirebase), 'admins');
 
     async login(loginData: UserCredentialsDataType): Promise<UserDataType | string> {
-        let userData: UserDataType | string = null
+        let userData: UserDataType | string = ''
         try {
             let userAuth: UserCredential | undefined
 
@@ -47,6 +47,8 @@ export default class AuthServiceFire implements AuthService {
                 console.log("Invalid email address");
             } else if (error.code === 'auth/user-not-found') {
                 console.log("User not found");
+            } else if (error.code === 'auth/wrong-password') {
+                userData = 'error: Incorrect credenitals';
             }
 
         }

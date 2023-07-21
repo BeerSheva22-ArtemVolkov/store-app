@@ -6,39 +6,47 @@ import InputResultType from "../model/InputResultType";
 import { authService, usersService } from "../config/service-config";
 import { authActions } from "../redux/slices/authSlice";
 import SignInForm from "../forms/SignInForm";
-import { useSelectorUsers } from "../hooks/hooks";
+import { useDispatchCode, useSelectorUsers } from "../hooks/hooks";
+import { codeActions } from "../redux/slices/codeSlice";
+import { useSelectorCode } from "../redux/store";
+import { useNavigate } from "react-router-dom";
 
 const SignIn: React.FC = () => {
 
+    const navigate = useNavigate()
     const dispatch = useDispatch();
+    const dispatchCode = useDispatchCode()
     const users = useSelectorUsers()
 
-    async function submitFn(loginData: UserCredentialsDataType): Promise<InputResultType> {
-        let inputResult: InputResultType = {
-            status: 'error',
-            message: "Server unavailable, repeat later on"
-        }
+    async function submitFn(loginData: UserCredentialsDataType): Promise<void> {
+
+        let successMessage: string = ''
+        let errorMessage: string = ''
+        let res: UserDataType | string = ''
+
         try {
-            const res: UserDataType | string = await authService.login(loginData);
+            res = await authService.login(loginData);
             typeof res == 'object' && dispatch(authActions.set(res));
-            if (typeof res == "object" && res?.role == 'user' && users.findIndex(user => user.email == res.email) == -1) {
+            if (typeof res == "object" && res?.role == 'user' && users.findIndex(user => typeof res != 'string' && user.email == res!.email) == -1) {
                 usersService.addUser({ email: res.email, nickname: '', firstName: '', lastName: '', address: { city: '', street: '', flatNumber: 0, streetNumber: 0 } }, res.uid)
             }
-            console.log(res);
 
-            const status = res ? 'success' : 'error'
-            const message = status == "success" ? typeof res == 'string' ? res : 'Welcome back' : 'Incorrect Credentials'
-
-            inputResult = {
-                status: status,
-                message: message
+            if (typeof res == 'string') {
+                if (res.includes('error')) {
+                    errorMessage = res.replace('error: ', '')
+                } else {
+                    successMessage = res
+                }
+            } else {
+                successMessage = 'Welcome back'
             }
-        } catch (error) {
-            console.log(error);
+        } catch (error: any) {
+            errorMessage = error.message;
         }
-        console.log(inputResult);
-
-        return inputResult;
+        dispatchCode(successMessage, errorMessage)
+        if (successMessage && typeof res == 'object') {
+            navigate('/')
+        }
     }
 
     return (

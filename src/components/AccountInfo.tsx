@@ -1,18 +1,13 @@
 import { Alert, Box, Button, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FilledInput, FormControl, FormControlLabel, Grid, InputAdornment, InputLabel, MenuItem, Select, Snackbar, Switch, TextField, ThemeProvider, Typography, createTheme } from "@mui/material"
-import UserDataType from "../model/UserDataType"
 import UserType from "../model/UserType"
 import { useSelectorUsers } from "../hooks/hooks"
 import { useSelectorAuth } from "../redux/store"
-import { useEffect, useRef, useState } from "react"
-import InputResultType from "../model/InputResultType"
-import UserCredentialsDataType from "../model/UserCredentialsDataType"
-import StatusType from "../model/StatusType"
-import { OrderStatusTypeArray } from "../model/OrderStatusType"
+import { useEffect, useState } from "react"
 
 const defaultTheme = createTheme();
 
 type Props = {
-    submitFn: (userData: UserType, uid: string) => Promise<InputResultType>
+    submitFn: (userData: UserType, uid: string) => Promise<void>
 }
 
 const AccountInfo: React.FC<Props> = ({ submitFn }) => {
@@ -25,9 +20,6 @@ const AccountInfo: React.FC<Props> = ({ submitFn }) => {
         setCurrentuser(users.find(user => user.email == userData?.email))
     }, [userData, users])
 
-    const message = useRef<string>('');
-    const [open, setOpen] = useState(false);
-    const severity = useRef<StatusType>('success');
     const [editMode, setEditMode] = useState<boolean>(false)
     const [firstName, setFirstName] = useState<string>(currentUser?.firstName || '')
     const [lastName, setLastName] = useState<string>(currentUser?.lastName || '')
@@ -88,23 +80,8 @@ const AccountInfo: React.FC<Props> = ({ submitFn }) => {
     }
 
     const handleSubmit = async (event: any) => {
-        //     event.preventDefault();
 
-        //     const data = new FormData(event.currentTarget);
-        //     let firstName: string = data.get('fname')! as string;
-        //     let lastName: string = data.get('lname')! as string;
-        //     let email: string = data.get('email')! as string;
-        //     let nickname: string = data.get('nickname')! as string;
-        //     let city: string = data.get('city')! as string;
-        //     let street: string = data.get('street')! as string;
-        //     let streetNumber: number = +(data.get('streetNumber')! as string);
-        //     let flatNumber: number = +(data.get('flatNumber')! as string);
-
-        const result = await submitFn({ email: currentUser!.email, firstName, lastName, nickname, address: { city, street, flatNumber, streetNumber } }, userData!.uid);
-
-        message.current = result.message!;
-        severity.current = result.status;
-        message.current && setOpen(true);
+        await submitFn({ email: currentUser!.email, firstName, lastName, nickname, address: { city, street, flatNumber, streetNumber } }, userData!.uid);
         closeUpdateDialog()
     };
 
@@ -123,17 +100,9 @@ const AccountInfo: React.FC<Props> = ({ submitFn }) => {
             >
                 <Grid container spacing={2} sx={{ flexGrow: 1 }}>
                     <Grid container xs={8}>
-                        <Box component="span" sx={{ p: 2, border: '1px dashed grey' }}>
-                            <Grid item xs={6} sm={6} md={6}>
-                                <TextField
-                                    required
-                                    fullWidth
-                                    id="fname"
-                                    label="First Name"
-                                    name="fname"
-                                    value={currentUser?.firstName}
-                                />
-                            </Grid>
+                        {/* <Box component="span" sx={{ p: 2, border: '1px dashed grey' }}> */}
+                        <Box>
+
                         </Box>
                     </Grid>
                     <Grid container xs={4}>
@@ -356,12 +325,6 @@ const AccountInfo: React.FC<Props> = ({ submitFn }) => {
                 </Grid>
             </Box>
         </Container>
-        <Snackbar open={open} autoHideDuration={10000}
-            onClose={() => setOpen(false)}>
-            <Alert onClose={() => setOpen(false)} severity={severity.current} sx={{ width: '100%' }}>
-                {message.current}
-            </Alert>
-        </Snackbar>
         <Dialog open={updateDialogOpened} onClose={closeUpdateDialog} fullWidth maxWidth={"xs"}>
             <DialogTitle>Address update</DialogTitle>
             <DialogContent>

@@ -62,7 +62,7 @@ const ProductItem: React.FC<ProductItemProps> = ({ productItem }) => {
 
     return <Card sx={{ maxWidth: '100%', boxShadow: 'lg' }}>
         <Box>
-            <CardMedia component='img' image={productItem.image} sx={{ height: '250px' }} />
+            <CardMedia component='img' image={productItem.image.url} sx={{ height: '250px' }} />
         </Box>
         <CardContent style={{ padding: '.5rem' }}>
             <Typography variant='body1'>{productItem.name}</Typography>

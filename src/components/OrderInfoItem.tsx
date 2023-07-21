@@ -19,7 +19,7 @@ const columns: GridColDef[] = [
     },
     {
         field: 'image', headerName: 'Image', flex: 0.2, headerClassName: 'data-grid-header',
-        align: 'left', headerAlign: 'left', renderCell: (params) => <img src={params.value} height='50px'></img>
+        align: 'left', headerAlign: 'left', renderCell: (params) => <img src={params.value.url} height='50px'></img>
     },
     {
         field: 'price', headerName: 'Price', type: 'number', flex: 0.2, headerClassName: 'data-grid-header',
