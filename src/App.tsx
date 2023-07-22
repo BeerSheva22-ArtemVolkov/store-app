@@ -1,21 +1,18 @@
 import React, { useMemo } from 'react';
 import './App.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Home from './pages/Home';
-import Navigator from './navigation/Navigator';
-import Account from './pages/Account';
-import Cart from './pages/Cart';
-import CustomerOrders from './pages/CustomerOrders';
-import Registration from './pages/Registration';
-import SellerOrders from './pages/SellerOrders';
-import SignIn from './pages/SignIn';
+import Home from './components/pages/Home';
+import Navigator from './components/navigation/Navigator';
+import Account from './components/pages/Account';
+import Cart from './components/pages/Cart';
+import CustomerOrders from './components/pages/CustomerOrders';
+import Registration from './components/pages/Registration';
+import SellerOrders from './components/pages/SellerOrders';
+import SignIn from './components/pages/SignIn';
 import RouteType from './model/RouteType';
 import routesConfig from './config/routes-config.json'
-import SignOut from './pages/SignOut';
-import AdminAccount from './pages/AdminAccount';
-import Store from './pages/Catalog';
-import AddProduct from './components/ProductForm';
-import CustomerSettings from './pages/CustomerSettings';
+import SignOut from './components/pages/SignOut';
+import CustomerSettings from './components/pages/CustomerSettings';
 import { useSelectorAuth, useSelectorCode } from './redux/store';
 import UserDataType from './model/UserDataType';
 import { Alert, Snackbar } from '@mui/material';
@@ -25,11 +22,10 @@ import CodeType from './model/CodeType';
 import { authActions } from './redux/slices/authSlice';
 import { authService } from './config/service-config';
 import { codeActions } from './redux/slices/codeSlice';
-import Products from './pages/Products';
-import TestPage from './pages/TestPage';
+import Products from './components/pages/Products';
 import PageType from './model/PagesType';
 import pages from './config/store-pages';
-import Redirect from './pages/Redirect';
+import Redirect from './components/pages/Redirect';
 
 const { always, authenticated, admin, noadmin, noauthenticated, development } = routesConfig;
 
@@ -94,9 +90,12 @@ const App: React.FC = () => {
         return res;
     }
 
+
+
     return <BrowserRouter>
         <Routes>
             <Route path='/' element={<Navigator routes={routes} />} >
+                {/* <Route path='/' element={<Navigator/>} > */}
                 <Route index element={<Home />} />
                 <Route path='/account' element={<Account />} >
                     <Route path='orders' element={<CustomerOrders />} />

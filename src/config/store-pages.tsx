@@ -1,5 +1,5 @@
 import PageType from "../model/PagesType"
-import Catalog from "../pages/Catalog"
+import Catalog from "../components/pages/Catalog"
 
 const pages: PageType = {
     to: '/store',
@@ -8,43 +8,94 @@ const pages: PageType = {
     element: <Catalog inputCategories={[]} />,
     sub: [
         {
-            to: '/store/books',
-            name: 'Books',
-            categoryName: 'books',
-            element: <Catalog inputCategories={['books']} />,
+            to: '/store/manga',
+            name: 'Manga',
+            categoryName: 'manga',
+            element: <Catalog inputCategories={['manga']} />,
             sub: [
                 {
-                    to: "/store/books/comix",
-                    name: "Comix",
-                    categoryName: 'comix',
-                    element: <Catalog inputCategories={['books', 'comix']} />,
-                    sub: []
-                },
-                {
-                    to: "/store/books/manga",
-                    name: "Manga",
-                    categoryName: 'manga',
-                    element: <Catalog inputCategories={['books', 'manga']} />,
-                    sub: []
-                },
-                {
-                    to: "/store/books/english",
-                    name: "English",
-                    categoryName: 'english',
-                    element: <Catalog inputCategories={['books', 'english']} />,
+                    to: "/store/manga/russian",
+                    name: "Russian",
+                    categoryName: 'russian',
+                    element: <Catalog inputCategories={['manga', 'russian']} />,
                     sub: [
                         {
-                            to: "/store/books/english/fantasy",
-                            name: "Fantasy",
-                            categoryName: 'fantasy',
-                            element: <Catalog inputCategories={['books', 'english', 'fantasy']} />,
+                            to: "/store/manga/russian/onepiece",
+                            name: "Onepiece",
+                            categoryName: 'onepiece',
+                            element: <Catalog inputCategories={['manga', 'russian', 'onepiece']} />,
                             sub: []
                         },
                         {
-                            to: "/store/books/english/detective",
-                            name: "Detective",
-                            categoryName: 'detective',
-                            element: <Catalog inputCategories={['books', 'english', 'detective']} />,
+                            to: "/store/manga/russian/naruto",
+                            name: "Naruto",
+                            categoryName: 'naruto',
+                            element: <Catalog inputCategories={['books', 'russian', 'naruto']} />,
+                            sub: []
+                        },
+                        {
+                            to: "/store/manga/russian/aot",
+                            name: "Attack of Titans",
+                            categoryName: 'aot',
+                            element: <Catalog inputCategories={['books', 'russian', 'aot']} />,
+                            sub: []
+                        }
+                    ]
+                },
+                {
+                    to: "/store/manga/english",
+                    name: "English",
+                    categoryName: 'english',
+                    element: <Catalog inputCategories={['manga', 'english']} />,
+                    sub: [
+                        {
+                            to: "/store/manga/english/onepiece",
+                            name: "Onepiece",
+                            categoryName: 'onepiece',
+                            element: <Catalog inputCategories={['manga', 'english', 'onepiece']} />,
+                            sub: []
+                        },
+                        {
+                            to: "/store/manga/english/naruto",
+                            name: "Naruto",
+                            categoryName: 'naruto',
+                            element: <Catalog inputCategories={['books', 'english', 'naruto']} />,
+                            sub: []
+                        },
+                        {
+                            to: "/store/manga/english/aot",
+                            name: "Attack of Titans",
+                            categoryName: 'aot',
+                            element: <Catalog inputCategories={['books', 'english', 'aot']} />,
+                            sub: []
+                        }
+                    ]
+                },
+                {
+                    to: "/store/manga/japan",
+                    name: "Japan",
+                    categoryName: 'japan',
+                    element: <Catalog inputCategories={['manga', 'japan']} />,
+                    sub: [
+                        {
+                            to: "/store/manga/japan/onepiece",
+                            name: "Onepiece",
+                            categoryName: 'onepiece',
+                            element: <Catalog inputCategories={['manga', 'japan', 'onepiece']} />,
+                            sub: []
+                        },
+                        {
+                            to: "/store/manga/japan/naruto",
+                            name: "Naruto",
+                            categoryName: 'naruto',
+                            element: <Catalog inputCategories={['books', 'japan', 'naruto']} />,
+                            sub: []
+                        },
+                        {
+                            to: "/store/manga/japan/aot",
+                            name: "Attack of Titans",
+                            categoryName: 'aot',
+                            element: <Catalog inputCategories={['books', 'japan', 'aot']} />,
                             sub: []
                         }
                     ]
@@ -52,33 +103,40 @@ const pages: PageType = {
             ]
         },
         {
-            to: '/store/games',
-            name: 'Games',
-            categoryName: 'games',
-            element: <Catalog inputCategories={['games']} />,
+            to: '/store/figures',
+            name: 'Figures',
+            categoryName: 'figures',
+            element: <Catalog inputCategories={['figures']} />,
             sub: [
                 {
-                    to: "/store/games/PS5",
-                    name: "PS5",
-                    categoryName: 'ps5',
-                    element: <Catalog inputCategories={['games', 'ps5']} />,
+                    to: "/store/figures/onepiece",
+                    name: "One piece",
+                    categoryName: 'onepiece',
+                    element: <Catalog inputCategories={['figures', 'onepiece']} />,
                     sub: []
                 },
                 {
-                    to: "/store/games/PS4",
-                    name: "PS4",
-                    categoryName: 'ps4',
-                    element: <Catalog inputCategories={['games', 'ps4']} />,
+                    to: "/store/figures/naruto",
+                    name: "Naruto",
+                    categoryName: 'naruto',
+                    element: <Catalog inputCategories={['figures', 'naruto']} />,
                     sub: []
                 },
                 {
-                    to: "/store/games/PC",
-                    name: "PC",
-                    categoryName: 'pc',
-                    element: <Catalog inputCategories={['games', 'pc']} />,
+                    to: "/store/figures/aot",
+                    name: "Attack of Titans",
+                    categoryName: 'aot',
+                    element: <Catalog inputCategories={['figures', 'aot']} />,
                     sub: []
                 }
             ]
+        },
+        {
+            to: '/store/cosplay',
+            name: 'Cosplay',
+            categoryName: 'cosplay',
+            element: <Catalog inputCategories={['cosplay']} />,
+            sub: []
         }
     ]
 }

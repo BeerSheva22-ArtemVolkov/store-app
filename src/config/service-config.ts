@@ -11,4 +11,3 @@ export const authService: AuthService = new AuthServiceFire();
 export const productsService: ProductsService = new ProductsServiceFire();
 export const ordersService: OrdersService = new OrdersServiceFire();
 export const usersService: UsersService = new UsersServiceFire()
-

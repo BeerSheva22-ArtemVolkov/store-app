@@ -49,7 +49,7 @@
         {
             "to": "/cart",
             "label": "Shopping Cart",
-            "type": "cart",
+            "type": "general",
             "icon": "ShoppingCart",
             "order": 99
         }
