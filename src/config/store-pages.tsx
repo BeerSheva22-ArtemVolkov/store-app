@@ -30,14 +30,14 @@ const pages: PageType = {
                             to: "/store/manga/russian/naruto",
                             name: "Naruto",
                             categoryName: 'naruto',
-                            element: <Catalog inputCategories={['books', 'russian', 'naruto']} />,
+                            element: <Catalog inputCategories={['manga', 'russian', 'naruto']} />,
                             sub: []
                         },
                         {
                             to: "/store/manga/russian/aot",
-                            name: "Attack of Titans",
+                            name: "Attack on Titan",
                             categoryName: 'aot',
-                            element: <Catalog inputCategories={['books', 'russian', 'aot']} />,
+                            element: <Catalog inputCategories={['manga', 'russian', 'aot']} />,
                             sub: []
                         }
                     ]
@@ -64,7 +64,7 @@ const pages: PageType = {
                         },
                         {
                             to: "/store/manga/english/aot",
-                            name: "Attack of Titans",
+                            name: "Attack on Titan",
                             categoryName: 'aot',
                             element: <Catalog inputCategories={['books', 'english', 'aot']} />,
                             sub: []
@@ -93,7 +93,7 @@ const pages: PageType = {
                         },
                         {
                             to: "/store/manga/japan/aot",
-                            name: "Attack of Titans",
+                            name: "Attack on Titan",
                             categoryName: 'aot',
                             element: <Catalog inputCategories={['books', 'japan', 'aot']} />,
                             sub: []
@@ -124,7 +124,7 @@ const pages: PageType = {
                 },
                 {
                     to: "/store/figures/aot",
-                    name: "Attack of Titans",
+                    name: "Attack on Titan",
                     categoryName: 'aot',
                     element: <Catalog inputCategories={['figures', 'aot']} />,
                     sub: []
